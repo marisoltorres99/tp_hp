@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>listado canchas</title>
+    <link rel="stylesheet" href="{% static 'canchas/css/style.css' %}">
+</head>
+<body>
+    <h1>Canchas</h1>
+    <button>Nueva Cancha</button>
+    <table>
+        <tr>
+            <th>Cancha</th>
+            <th>Valoracion</th>
+            <th>Estado</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for c in canchas %}
+        <tr>
+            <td>{{ c.numero }}</td>
+            <td>{{ c.valoracion|default:"Sin valoracion" }}</td>
+            <td>{{ c.estado|yesno:"A,D" }}</td>
+            <td><button>Editar</button></td>
+            <td><button>Desactivar</button></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

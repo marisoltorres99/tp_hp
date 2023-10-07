@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "eamodio.gitlens",
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
+        "shamanu4.django-intellisense",
+        "batisteo.vscode-django",
+        "monosans.djlint"
+    ],
+    "unwantedRecommendations": [
+        "ms-python.isort"
+    ]
+}

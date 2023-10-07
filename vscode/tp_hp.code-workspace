@@ -1,0 +1,65 @@
+{
+    "folders": [
+        {
+            "path": ".."
+        },
+    ],
+    "settings": {
+        "files.associations": {
+            "*.py": "python",
+            "*.js": "javascript",
+            "*.css": "css",
+            "*.html": "django-html",
+        },
+        "files.watcherExclude": {
+            "**/.git/objects/**": true,
+            "**/.git/subtree-cache/**": true,
+            "**/node_modules/*/**": true,
+            "**/virtualenv/**": true,
+        },
+        "files.exclude": {
+            "**/__pycache__/": true,
+        },
+        "files.insertFinalNewline": true,
+        "files.trimTrailingWhitespace": true,
+        "files.eol": "\n",
+        "files.encoding": "utf8",
+        "editor.renderWhitespace": "all",
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.codeActionsOnSave": {
+            //Asegurarse de no tener la ext. de isort en vscode, usamos ruff
+            "source.organizeImports": true,
+        },
+        "editor.formatOnSave": false,
+        "editor.rulers": [
+            80,
+            120
+        ],
+        "workbench.colorCustomizations": {
+            "titleBar.activeBackground": "#207030e0"
+        },
+        "python.defaultInterpreterPath": "${workspaceFolder}/virtualenv/bin/python",
+        "python.analysis.extraPaths": [
+            "${workspaceFolder}/tienda_web_curso/"
+        ],
+        "python.autoComplete.extraPaths": [
+            "${workspaceFolder}/tienda_web_curso/"
+        ],
+        "ruff.organizeImports": true,
+        "djangointellisense.debugMessages": true,
+        "djangointellisense.projectRoot": "${workspaceFolder}/tienda_web_curso/tienda_web_curso/",
+        "djangointellisense.settingsModule": "tienda_web_curso.settings",
+        // djlint.useNewLinterOutputParser: setear en false para versiones de djlint < 1.25
+        "djlint.useNewLinterOutputParser": false,
+        "emmet.includeLanguages": {
+            "django-html": "html",
+        },
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter",
+        },
+        "[html]": {
+            "editor.defaultFormatter": "monosans.djlint",
+        },
+    },
+}

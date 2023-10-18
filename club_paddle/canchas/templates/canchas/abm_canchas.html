@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+    <title>ABM Canchas</title>
+    <link rel="stylesheet" href="{% static "style.css" %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Canchas</h1>
+    <table>
+        <tr>
+            <th>Cancha</th>
+            <th>Precio</th>
+            <th>Valoracion</th>
+            <th>Estado</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for c in canchas %}
+            <tr>
+                <td>{{c.numero}}</td>
+                <td>5000</td>
+                <td>{{c.valoracion|default_if_none:"No valorada"}}</td>
+                <td>{{c.activo|default:"Desactivada"}}</td>
+                <td><button class="editar">Editar</button></td>
+                <td><button class="desactivar">Desactivar</button></td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

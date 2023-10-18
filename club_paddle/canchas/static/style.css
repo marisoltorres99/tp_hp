@@ -1,0 +1,43 @@
+html{
+    font-family: 'Montserrat', sans-serif;
+}
+
+th, td{
+    border: solid 2px black;
+    width: 100px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+table{
+    border-collapse: collapse;
+}
+
+th{
+    background-color: yellow;
+    color: black;
+}
+
+.editar{
+    background-color: blue;
+    color: white;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+
+.editar:hover{
+    box-shadow: 0 0.1rem 0.4rem rgb(0, 0, 0, 0.3);
+    background-color: cornflowerblue;
+}
+
+.desactivar{
+    background-color: red;
+    color: white;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+
+.desactivar:hover{
+    box-shadow: 0 0.1rem 0.4rem rgb(0, 0, 0, 0.3);
+    background-color: lightcoral;
+}

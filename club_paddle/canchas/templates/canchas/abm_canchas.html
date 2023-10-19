@@ -3,13 +3,16 @@
 <head>
     <title>ABM Canchas</title>
     <link rel="stylesheet" href="{% static "style.css" %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Canchas</h1>
-    <table>
+    <div class="container pt-2">
+    <h2>Canchas</h2>
+    <div class="container p-2 posicionar">
+        <a href="{% url "Nueva" %}" class="btn btn-primary">Nueva Cancha</a>
+    </div>
+    <table class="table table-bordered">
+        <thead class="table-warning">
         <tr>
             <th>Cancha</th>
             <th>Precio</th>
@@ -18,16 +21,18 @@
             <th></th>
             <th></th>
         </tr>
+        </thead>
         {% for c in canchas %}
             <tr>
                 <td>{{c.numero}}</td>
                 <td>{{c.obtener_precio_actual}}</td>
                 <td>{{c.valoracion|default_if_none:"No valorada"}}</td>
                 <td>{{c.mostrar_activo}}</td>
-                <td><button class="editar">Editar</button></td>
-                <td><button class="desactivar">Desactivar</button></td>
+                <td><button class="btn btn-primary">Editar</button></td>
+                <td><button class="btn btn-danger">Desactivar</button></td>
             </tr>
         {% endfor %}
     </table>
+    </div>
 </body>
 </html>

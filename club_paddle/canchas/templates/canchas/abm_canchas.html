@@ -21,9 +21,9 @@
         {% for c in canchas %}
             <tr>
                 <td>{{c.numero}}</td>
-                <td>5000</td>
+                <td>{{c.obtener_precio_actual}}</td>
                 <td>{{c.valoracion|default_if_none:"No valorada"}}</td>
-                <td>{{c.activo|default:"Desactivada"}}</td>
+                <td>{{c.mostrar_activo}}</td>
                 <td><button class="editar">Editar</button></td>
                 <td><button class="desactivar">Desactivar</button></td>
             </tr>

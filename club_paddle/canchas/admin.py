@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Cancha, Precios_cancha
+from .models import Cancha, CanchaPrecios
 
 admin.site.register(Cancha)
-admin.site.register(Precios_cancha)
+admin.site.register(CanchaPrecios)

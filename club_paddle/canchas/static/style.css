@@ -8,3 +8,9 @@ td, thead{
     text-align: right;
 }
 
+.centrar{
+    width: 100px;
+    margin: 0 auto;
+    text-align: center;
+}
+

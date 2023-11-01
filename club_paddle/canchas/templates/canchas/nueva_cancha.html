@@ -9,15 +9,25 @@
 </head>
 <body>
 <h2 class="container pt-2">Nueva Cancha</h2>
-<form action="">
+{% if messages %}
+<ul class="container mb-3 mt-3 alert alert-success">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<form action="" method="post">
+    {% csrf_token %}
     <div class="container mb-3 mt-3">
-        <label for="numero" class="form-label">Numero</label>
-        <input type="text" class="form-control" id="numero" placeholder="ingrese numero de la cancha">
+        {% for field in form %}
+        <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+        {{ field }}
+        <br>
+        {% endfor %}
+        <a href="{% url "Canchas" %}" class="btn btn-outline-secondary">Volver</a>
+        <input type="submit" value="Cargar" class="btn btn-primary">
     </div>
-    <div class="container mb-3 mt-3">
-        <label for="precio" class="form-label">Precio</label>
-        <input type="text" class="form-control" id="precio" placeholder="ingrese precio de la cancha">
-    </div>
+    <!--
     <div class="container mb-3 mt-3">
         {% for d in dias %}
         <label for="{{d.dia}}">{{d.dia}}</label>
@@ -31,7 +41,7 @@
             <br>
             <br>
         {% endfor %}
-    </div>
+    </div>-->
 </form>
 </body>
 </html>

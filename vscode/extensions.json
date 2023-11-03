@@ -6,9 +6,10 @@
         "charliermarsh.ruff",
         "shamanu4.django-intellisense",
         "batisteo.vscode-django",
-        "monosans.djlint"
+        "monosans.djlint",
+        "esbenp.prettier-vscode",
     ],
     "unwantedRecommendations": [
-        "ms-python.isort"
+        "ms-python.isort",
     ]
 }

@@ -61,5 +61,8 @@
         "[html]": {
             "editor.defaultFormatter": "monosans.djlint",
         },
+        "[javascript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+        },
     },
 }

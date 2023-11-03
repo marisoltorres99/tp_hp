@@ -23,12 +23,15 @@ def nueva_cancha(request):
     if request.method == "POST":
         mi_formulario = FormNuevaCancha(request.POST)
         if mi_formulario.is_valid():
+            print(request.POST)
             numero = mi_formulario.cleaned_data["numero"]
             precio = mi_formulario.cleaned_data["precio"]
             cancha = Cancha(numero=numero)
             cancha.save()
             cancha_precio = CanchaPrecios(cancha=cancha, precio=precio)
             cancha_precio.save()
+            for key, value in request.POST.items():
+                print(f"Clave: {key}, Valor: {value}")
             messages.success(request, "¡Cancha cargada con éxito!")
             return HttpResponseRedirect("/canchas/nueva/")
     else:
@@ -36,5 +39,8 @@ def nueva_cancha(request):
     return render(
         request,
         "canchas/nueva_cancha.html",
-        {"form": mi_formulario},
+        {
+            "form": mi_formulario,
+            "dias": dias,
+        },
     )

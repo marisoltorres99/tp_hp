@@ -1,16 +1,16 @@
-td, thead{
+td,
+thead {
     width: 100px;
     margin: 0 auto;
     text-align: center;
 }
 
-.posicionar{
+.posicionar {
     text-align: right;
 }
 
-.centrar{
+.centrar {
     width: 100px;
     margin: 0 auto;
     text-align: center;
 }
-

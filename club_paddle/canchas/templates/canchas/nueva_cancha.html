@@ -24,24 +24,23 @@
         {{ field }}
         <br>
         {% endfor %}
-        <a href="{% url "Canchas" %}" class="btn btn-outline-secondary">Volver</a>
-        <input type="submit" value="Cargar" class="btn btn-primary">
     </div>
-    <!--
     <div class="container mb-3 mt-3">
         {% for d in dias %}
         <label for="{{d.dia}}">{{d.dia}}</label>
-        <input type="checkbox" id="{{d.dia}}" onclick="mostrar_input_hora(this.id, '{{d.hora}}')">
+        <input type="checkbox" id="{{d.dia}}" name="{{d.dia}}" onclick="mostrar_input_hora(this.id, '{{d.hora}}')">
         <span id="{{d.hora}}" style="display: none">
             <label for="{{d.hora}}_desde">Desde:</label>
-            <input type="time" id="{{d.hora}}_desde">
+            <input type="time" id="{{d.hora}}_desde" name="{{d.hora}}_desde">
             <label for="{{d.hora}}_hasta">Hasta:</label>
-            <input type="time" id="{{d.hora}}_hasta">
+            <input type="time" id="{{d.hora}}_hasta" name="{{d.hora}}_hasta">
         </span>
             <br>
             <br>
         {% endfor %}
-    </div>-->
+        <a href="{% url "Canchas" %}" class="btn btn-outline-secondary">Volver</a>
+        <input type="submit" value="Cargar" class="btn btn-primary">
+    </div>
 </form>
 </body>
 </html>

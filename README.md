@@ -1,7 +1,7 @@
 # tp_hp
 Proyecto Final de la materia Habilitación Profesional UTN FRRO
 
-# proyecto_web_curso
+# tp_hp
 
 Repositorio Git para el proyecto Django.
 
@@ -13,7 +13,7 @@ Para instalarlo y luego crearlo ejecutamos:
 
 `cd <carpeta_del_repositorio_git>`
 
-`virtualenv -p /usr/bin/python3.10 --prompt "(virtualenv-PWC)" virtualenv`
+`virtualenv -p /usr/bin/python3.10 --prompt "(virtualenv-TPHP)" virtualenv`
 
 Activar el virtualenv recién creado y luego actualizar pip:
 

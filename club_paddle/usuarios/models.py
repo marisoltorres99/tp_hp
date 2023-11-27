@@ -12,13 +12,3 @@ class Cliente(models.Model):
         verbose_name = "cliente"
         verbose_name_plural = "clientes"
         db_table = "clientes"
-
-
-class Administrador(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    dni = models.CharField(max_length=8)
-
-    class Meta:
-        verbose_name = "administrador"
-        verbose_name_plural = "administradores"
-        db_table = "administradores"

@@ -1,6 +1,10 @@
+from typing import Any
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import View
 
@@ -9,6 +13,9 @@ from usuarios.models import Cliente
 
 
 def iniciar_sesion(request):
+    if request.user.is_authenticated:
+        return redirect("menu_principal")
+
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -17,13 +24,18 @@ def iniciar_sesion(request):
             usuario = authenticate(username=nombre_usuario, password=contra)
             if usuario is not None:
                 login(request, usuario)
-                return redirect("inicio")
+                return redirect("menu_principal")
     else:
         form = AuthenticationForm()
         return render(request, "usuarios/iniciar_sesion.html", {"form": form})
 
 
 class VRegistro(View):
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if request.user.is_authenticated:
+            return redirect("menu_principal")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
         form = FormNuevoCliente()
         return render(request, "usuarios/registro.html", {"form": form})
@@ -43,7 +55,7 @@ class VRegistro(View):
             nuevo_cliente.save()
 
             login(request, usuario)
-            return redirect("inicio")
+            return redirect("menu_principal")
         else:
             for msg in form.error_messages:
                 messages.error(request, form.error_messages[msg])
@@ -51,5 +63,8 @@ class VRegistro(View):
             return render(request, "usuarios/registro.html", {"form": form})
 
 
-def inicio(request):
-    return render(request, "usuarios/inicio.html")
+@login_required
+def menu_principal(request):
+    if request.user.is_superuser:
+        return render(request, "usuarios/menu_principal_admin.html")
+    return render(request, "usuarios/menu_principal_cliente.html")

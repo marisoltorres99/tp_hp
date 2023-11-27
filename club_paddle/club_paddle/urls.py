@@ -16,10 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from usuarios.views import iniciar_sesion
 
 urlpatterns = [
+    path("", iniciar_sesion),
     path("admin/", admin.site.urls),
     path("canchas/", include("canchas.urls")),
     path("profesores/", include("profesores.urls")),
     path("usuarios/", include("usuarios.urls")),
+    path("iniciar_sesion/", iniciar_sesion, name="iniciar_sesion"),
 ]

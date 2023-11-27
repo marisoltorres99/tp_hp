@@ -31,7 +31,7 @@
             //Asegurarse de no tener la ext. de isort en vscode, usamos ruff
             "source.organizeImports": true,
         },
-        "editor.formatOnSave": false,
+        "editor.formatOnSave": true,
         "editor.rulers": [
             80,
             120

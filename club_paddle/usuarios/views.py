@@ -29,6 +29,7 @@ def iniciar_sesion(request):
         return render(request, "club_paddle_app/base.html", {"form": form})
 
 
+@login_required
 def cerrar_sesion(request):
     logout(request)
     return redirect("iniciar_sesion")

@@ -1,5 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UsernameField
+from django.contrib.auth.forms import (
+    AuthenticationForm,
+    UserCreationForm,
+    UsernameField,
+)
 
 from .models import User
 
@@ -50,3 +54,10 @@ class FormNuevoCliente(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields["password1"].widget.attrs["class"] = "form-control"
         self.fields["password2"].widget.attrs["class"] = "form-control"
+
+
+class FormInicioSesion(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs["class"] = "form-control"
+        self.fields["password"].widget.attrs["class"] = "form-control"

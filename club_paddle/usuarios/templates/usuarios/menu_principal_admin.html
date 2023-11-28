@@ -1,7 +1,7 @@
 {% extends "club_paddle_app/base.html" %}
 {% block content %}
-    <a href="" class="btn btn-primary">Profesores</a>
-    <a href="" class="btn btn-primary">Canchas</a>
+    <a href="{% url "Profesores" %}" class="btn btn-primary">Profesores</a>
+    <a href="{% url "Canchas" %}" class="btn btn-primary">Canchas</a>
     <a href="" class="btn btn-primary">Clases</a>
     <a href="" class="btn btn-primary">Informes</a>
 {% endblock content %}

@@ -3,12 +3,11 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import View
 
-from usuarios.forms import FormNuevoCliente
+from usuarios.forms import FormInicioSesion, FormNuevoCliente
 from usuarios.models import Cliente
 
 
@@ -17,7 +16,7 @@ def iniciar_sesion(request):
         return redirect("menu_principal")
 
     if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
+        form = FormInicioSesion(request, data=request.POST)
         if form.is_valid():
             nombre_usuario = form.cleaned_data.get("username")
             contra = form.cleaned_data.get("password")
@@ -26,7 +25,7 @@ def iniciar_sesion(request):
                 login(request, usuario)
                 return redirect("menu_principal")
     else:
-        form = AuthenticationForm()
+        form = FormInicioSesion()
         return render(request, "club_paddle_app/base.html", {"form": form})
 
 

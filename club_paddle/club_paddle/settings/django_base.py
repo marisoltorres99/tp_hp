@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "canchas",
     "profesores",
     "usuarios",
+    "club_paddle_app",
 ]
 
 MIDDLEWARE = [

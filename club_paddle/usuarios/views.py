@@ -1,8 +1,8 @@
 from typing import Any
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
@@ -27,7 +27,12 @@ def iniciar_sesion(request):
                 return redirect("menu_principal")
     else:
         form = AuthenticationForm()
-        return render(request, "usuarios/iniciar_sesion.html", {"form": form})
+        return render(request, "club_paddle_app/base.html", {"form": form})
+
+
+def cerrar_sesion(request):
+    logout(request)
+    return redirect("iniciar_sesion")
 
 
 class VRegistro(View):

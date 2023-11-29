@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect, render
 
 from canchas.forms import FormNuevaCancha
-from canchas.models import Cancha, CanchaPrecios
+from canchas.models import Cancha, CanchaPrecios, HorariosCancha
 
 
 def abm_canchas(request):
@@ -30,8 +30,22 @@ def nueva_cancha(request):
             cancha.save()
             cancha_precio = CanchaPrecios(cancha=cancha, precio=precio)
             cancha_precio.save()
-            for key, value in request.POST.items():
-                print(f"Clave: {key}, Valor: {value}")
+
+            datos_formulario = request.POST.dict()
+
+            for key in ["csrfmiddlewaretoken", "numero", "precio"]:
+                if key in datos_formulario:
+                    del datos_formulario[key]
+
+            for dia, valor in datos_formulario.items():
+                if valor == "on":
+                    cancha_horario = HorariosCancha(cancha=cancha, dia=dia)
+                    desde_key = f"hora{dia}_desde"
+                    hasta_key = f"hora{dia}_hasta"
+                    cancha_horario.hora_desde = datos_formulario.get(desde_key)
+                    cancha_horario.hora_hasta = datos_formulario.get(hasta_key)
+                    cancha_horario.save()
+
             messages.success(request, "¡Cancha cargada con éxito!")
             return HttpResponseRedirect("/canchas/nueva/")
     else:

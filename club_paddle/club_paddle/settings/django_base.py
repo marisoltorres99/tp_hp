@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "profesores",
     "usuarios",
     "club_paddle_app",
+    "clases",
 ]
 
 MIDDLEWARE = [

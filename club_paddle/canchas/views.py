@@ -36,7 +36,6 @@ def nueva_cancha(request):
     if request.method == "POST":
         mi_formulario = FormNuevaCancha(request.POST)
         if mi_formulario.is_valid():
-            print(request.POST)
             numero = mi_formulario.cleaned_data["numero"]
             precio = mi_formulario.cleaned_data["precio"]
             cancha = Cancha(numero=numero)

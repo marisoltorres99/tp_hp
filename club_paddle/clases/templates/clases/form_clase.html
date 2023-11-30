@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ abm }}</title>
+        <link rel="stylesheet" href="{% static "canchas/style.css" %}">
+        <script src="{% static "canchas/funciones.js" %}"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+              crossorigin="anonymous">
+    </head>
+    <body>
+        <h2 class="container pt-2">{{ abm }}</h2>
+        {% if messages %}
+            <ul class="container mb-3 mt-3 alert alert-success">
+                {% for message in messages %}
+                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="container mb-3 mt-3">
+                {% for field in form %}
+                    <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                    {{ field }}
+                    <br>
+                {% endfor %}
+            </div>
+            <div class="container mb-3 mt-3">
+                {% for d in dias %}
+                    <label for="{{ d.dia }}">{{ d.dia }}</label>
+                    <input type="checkbox"
+                           id="{{ d.dia }}"
+                           name="{{ d.dia }}"
+                           onclick="mostrar_input_hora(this.id, '{{ d.hora }}')">
+                    <span id="{{ d.hora }}" style="display: none">
+                        <label for="{{ d.hora }}_desde">Desde:</label>
+                        <input type="time" id="{{ d.hora }}_desde" name="{{ d.hora }}_desde">
+                        <label for="{{ d.hora }}_hasta">Hasta:</label>
+                        <input type="time" id="{{ d.hora }}_hasta" name="{{ d.hora }}_hasta">
+                    </span>
+                    <br>
+                    <br>
+                {% endfor %}
+                <a href="{% url "Clases" %}" class="btn btn-outline-secondary">Volver</a>
+                <input type="submit" value="{{ boton_submit }}" class="btn btn-primary">
+            </div>
+        </form>
+    </body>
+</html>

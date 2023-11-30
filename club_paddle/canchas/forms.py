@@ -1,7 +1,4 @@
 from django import forms
-from django.forms import ModelForm
-
-from canchas.models import Cancha
 
 
 class FormNuevaCancha(forms.Form):

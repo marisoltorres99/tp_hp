@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = [
     path("", views.abm_clases, name="Clases"),
-    path("nueva/", views.nueva_clase, name="Nueva"),
+    path("nueva/", views.nueva_clase, name="NuevaClase"),
     path("editar/<int:clase_id>/", views.editar_cancha, name="EditarClase"),
 ]

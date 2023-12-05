@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
@@ -64,7 +66,7 @@ def nueva_cancha(request):
         mi_formulario = FormNuevaCancha()
     return render(
         request,
-        "canchas/form_cancha.html",
+        "canchas/nueva_cancha.html",
         {
             "form": mi_formulario,
             "dias": dias,
@@ -75,8 +77,22 @@ def nueva_cancha(request):
 
 
 def editar_cancha(request, **kwargs):
+    dias = OrderedDict()
+    dias["Lunes"] = {"obj": None, "hora": "horaLunes"}
+    dias["Martes"] = {"obj": None, "hora": "horaMartes"}
+    dias["Miercoles"] = {"obj": None, "hora": "horaMiercoles"}
+    dias["Jueves"] = {"obj": None, "hora": "horaJueves"}
+    dias["Viernes"] = {"obj": None, "hora": "horaViernes"}
+    dias["Sabado"] = {"obj": None, "hora": "horaSabado"}
+    dias["Domingo"] = {"obj": None, "hora": "horaDomingo"}
+
     if request.method == "GET":
         cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
+
+        horarios_qs = HorariosCancha.objects.filter(cancha_id=kwargs["cancha_id"])
+        for horario in horarios_qs:
+            dias[horario.dia]["obj"] = horario
+
         datos_iniciales = {
             "numero": cancha.numero,
             "precio": cancha.obtener_precio_actual,
@@ -86,8 +102,9 @@ def editar_cancha(request, **kwargs):
             "form": mi_formulario,
             "boton_submit": "Modificar",
             "abm": "Editar Cancha",
+            "dias": dias,
         }
-        return render(request, "canchas/form_cancha.html", context)
+        return render(request, "canchas/editar_cancha.html", context)
     else:
         mi_formulario = FormNuevaCancha(request.POST)
         if mi_formulario.is_valid():
@@ -97,10 +114,30 @@ def editar_cancha(request, **kwargs):
             cancha_id = kwargs["cancha_id"]
             cancha_qs = Cancha.objects.filter(cancha_id=cancha_id)
             cancha_qs.update(numero=numero)
-
             cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
-            nuevo_precio = CanchaPrecios(cancha=cancha, precio=precio)
-            nuevo_precio.save()
+
+            if cancha.obtener_precio_actual != precio:
+                nuevo_precio = CanchaPrecios(cancha=cancha, precio=precio)
+                nuevo_precio.save()
+
+            datos_formulario = request.POST.dict()
+
+            for key in ["csrfmiddlewaretoken", "numero", "precio"]:
+                if key in datos_formulario:
+                    del datos_formulario[key]
+
+            for dia, valor in datos_formulario.items():
+                if valor == "on":
+                    horarios_cancha_qs = HorariosCancha.objects.filter(
+                        cancha_id=cancha_id
+                    )
+                    desde_key = f"hora{dia}_desde"
+                    hasta_key = f"hora{dia}_hasta"
+                    horarios_cancha_qs.update(
+                        dia=dia,
+                        hora_desde=datos_formulario.get(desde_key),
+                        hora_hasta=datos_formulario.get(hasta_key),
+                    )
 
             messages.success(request, "¡Cancha modificada con éxito!")
         url_destino = reverse("EditarCancha", kwargs={"cancha_id": cancha_id})

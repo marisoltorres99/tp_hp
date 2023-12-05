@@ -4,7 +4,7 @@
     <head>
         <title>{{ abm }}</title>
         <link rel="stylesheet" href="{% static "canchas/style.css" %}">
-        <script src="{% static "canchas/funciones.js" %}"></script>
+        <script src="{% static "canchas/nueva_editar.js" %}"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
               rel="stylesheet"
               integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
@@ -29,17 +29,25 @@
                 {% endfor %}
             </div>
             <div class="container mb-3 mt-3">
-                {% for d in dias %}
-                    <label for="{{ d.dia }}">{{ d.dia }}</label>
+                {% for key_dia, val_dict in dias.items %}
+                    <label for="{{ key_dia }}">{{ key_dia }}</label>
                     <input type="checkbox"
-                           id="{{ d.dia }}"
-                           name="{{ d.dia }}"
-                           onclick="mostrar_input_hora(this.id, '{{ d.hora }}')">
-                    <span id="{{ d.hora }}" style="display: none">
-                        <label for="{{ d.hora }}_desde">Desde:</label>
-                        <input type="time" id="{{ d.hora }}_desde" name="{{ d.hora }}_desde">
-                        <label for="{{ d.hora }}_hasta">Hasta:</label>
-                        <input type="time" id="{{ d.hora }}_hasta" name="{{ d.hora }}_hasta">
+                           id="{{ key_dia }}"
+                           name="{{ key_dia }}"
+                           onclick="mostrar_input_hora(this.id, '{{ val_dict.hora }}')"
+                           {% if val_dict.obj %}checked{% endif %} />
+                    <span id="{{ val_dict.hora }}"
+                          {% if not val_dict.obj %}style="display: none"{% endif %}>
+                        <label for="{{ val_dict.hora }}_desde">Desde:</label>
+                        <input type="time"
+                               id="{{ val_dict.hora }}_desde"
+                               name="{{ val_dict.hora }}_desde"
+                               {% if val_dict.obj %}value="{{ val_dict.obj.hora_desde }}"{% endif %} />
+                        <label for="{{ val_dict.hora }}_hasta">Hasta:</label>
+                        <input type="time"
+                               id="{{ val_dict.hora }}_hasta"
+                               name="{{ val_dict.hora }}_hasta"
+                               {% if val_dict.obj %}value="{{ val_dict.obj.hora_hasta }}"{% endif %} />
                     </span>
                     <br>
                     <br>

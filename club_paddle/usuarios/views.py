@@ -26,7 +26,7 @@ def iniciar_sesion(request):
                 return redirect("menu_principal")
     else:
         form = FormInicioSesion()
-        return render(request, "club_paddle_app/base.html", {"form": form})
+        return render(request, "base.html", {"form": form})
 
 
 @login_required

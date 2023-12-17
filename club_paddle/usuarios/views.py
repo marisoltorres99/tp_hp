@@ -26,7 +26,7 @@ def iniciar_sesion(request):
                 return redirect("menu_principal")
     else:
         form = FormInicioSesion()
-        return render(request, "base.html", {"form": form})
+        return render(request, "usuarios/iniciar_sesion.html", {"form": form})
 
 
 @login_required

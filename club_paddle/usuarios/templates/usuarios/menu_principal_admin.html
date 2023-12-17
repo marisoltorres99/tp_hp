@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% block content %}
+{% block nav_bar %}
     <a href="{% url "Profesores" %}" class="btn btn-primary">Profesores</a>
     <a href="{% url "Canchas" %}" class="btn btn-primary">Canchas</a>
     <a href="{% url "Clases" %}" class="btn btn-primary">Clases</a>
     <a href="" class="btn btn-primary">Informes</a>
-{% endblock content %}
+    {{ block.super }}
+{% endblock nav_bar %}

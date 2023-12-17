@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% block content %}
+{% block nav_bar %}
     <a href="" class="btn btn-primary">Mi Cuenta</a>
     <a href="" class="btn btn-primary">Canchas</a>
     <a href="" class="btn btn-primary">Clases</a>
-{% endblock content %}
+    {{ block.super }}
+{% endblock nav_bar %}

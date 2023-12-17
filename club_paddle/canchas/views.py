@@ -71,7 +71,6 @@ def nueva_cancha(request):
             "form": mi_formulario,
             "dias": dias,
             "boton_submit": "Cargar",
-            "abm": "Nueva Cancha",
         },
     )
 
@@ -101,7 +100,6 @@ def editar_cancha(request, **kwargs):
         context = {
             "form": mi_formulario,
             "boton_submit": "Modificar",
-            "abm": "Editar Cancha",
             "dias": dias,
         }
         return render(request, "canchas/editar_cancha.html", context)

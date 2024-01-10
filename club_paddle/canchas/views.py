@@ -35,7 +35,15 @@ def nueva_cancha(request):
         {"dia": "Sabado", "hora": "horaSabado"},
         {"dia": "Domingo", "hora": "horaDomingo"},
     ]
-    if request.method == "POST":
+    if request.method == "GET":
+        mi_formulario = FormNuevaCancha()
+        context = {
+            "form": mi_formulario,
+            "dias": dias,
+        }
+        return render(request, "canchas/nueva_cancha.html", context)
+
+    else:
         mi_formulario = FormNuevaCancha(request.POST)
         if mi_formulario.is_valid():
             numero = mi_formulario.cleaned_data["numero"]
@@ -61,18 +69,7 @@ def nueva_cancha(request):
                     cancha_horario.save()
 
             messages.success(request, "¡Cancha cargada con éxito!")
-            return HttpResponseRedirect("/canchas/nueva/")
-    else:
-        mi_formulario = FormNuevaCancha()
-    return render(
-        request,
-        "canchas/nueva_cancha.html",
-        {
-            "form": mi_formulario,
-            "dias": dias,
-            "boton_submit": "Cargar",
-        },
-    )
+            return HttpResponseRedirect(reverse("NuevaCancha"))
 
 
 def editar_cancha(request, **kwargs):
@@ -99,7 +96,6 @@ def editar_cancha(request, **kwargs):
         mi_formulario = FormNuevaCancha(initial=datos_iniciales)
         context = {
             "form": mi_formulario,
-            "boton_submit": "Modificar",
             "dias": dias,
         }
         return render(request, "canchas/editar_cancha.html", context)
@@ -112,15 +108,16 @@ def editar_cancha(request, **kwargs):
             cancha_id = kwargs["cancha_id"]
             cancha_qs = Cancha.objects.filter(cancha_id=cancha_id)
             cancha_qs.update(numero=numero)
+
             cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
 
-            if cancha.obtener_precio_actual != precio:
+            if cancha.obtener_precio_actual() != precio:
                 nuevo_precio = CanchaPrecios(cancha=cancha, precio=precio)
                 nuevo_precio.save()
 
             datos_formulario = request.POST.dict()
 
-            for key in ["csrfmiddlewaretoken", "numero", "precio"]:
+            """for key in ["csrfmiddlewaretoken", "numero", "precio"]:
                 if key in datos_formulario:
                     del datos_formulario[key]
 
@@ -135,7 +132,7 @@ def editar_cancha(request, **kwargs):
                         dia=dia,
                         hora_desde=datos_formulario.get(desde_key),
                         hora_hasta=datos_formulario.get(hasta_key),
-                    )
+                    )"""
 
             messages.success(request, "¡Cancha modificada con éxito!")
         url_destino = reverse("EditarCancha", kwargs={"cancha_id": cancha_id})

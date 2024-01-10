@@ -26,7 +26,11 @@ def abm_profesores(request):
 def nuevo_profesor(request):
     if request.method == "GET":
         mi_formulario = FormNuevoProfesor()
-        context = {"form": mi_formulario, "boton_submit": "Cargar", "abm": "Nuevo Profesor"}
+        context = {
+            "form": mi_formulario,
+            "boton_submit": "Cargar",
+            "abm": "Nuevo Profesor",
+        }
         return render(request, "profesores/form_profesor.html", context)
     else:
         mi_formulario = FormNuevoProfesor(request.POST)
@@ -60,7 +64,11 @@ def editar_profesor(request, **kwargs):
             "domicilio": profesor.domicilio,
         }
         mi_formulario = FormNuevoProfesor(initial=datos_iniciales)
-        context = {"form": mi_formulario, "boton_submit": "Modificar", "abm": "Editar Profesor"}
+        context = {
+            "form": mi_formulario,
+            "boton_submit": "Modificar",
+            "abm": "Editar Profesor",
+        }
         return render(request, "profesores/form_profesor.html", context)
     else:
         mi_formulario = FormNuevoProfesor(request.POST)

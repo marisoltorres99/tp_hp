@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 {% load static %}
-{% block nav_bar %}
-    <a href="" class="btn btn-primary">Mis Reservas</a>
-    <button type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#ModalDesactivarCuenta"
-            clubpad-user-id="{{ request.user.id }}"
-            class="btn btn-danger">Desactivar Cuenta</button>
-    <a href="" class="btn btn-primary">Modificar Cuenta</a>
-    {{ block.super }}
-{% endblock nav_bar %}
+<div class="container pt-2">
+    {% block nav_bar %}
+        <a href="" class="btn btn-primary">Mis Reservas</a>
+        <button type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#ModalDesactivarCuenta"
+                clubpad-user-id="{{ request.user.id }}"
+                class="btn btn-danger">Desactivar Cuenta</button>
+        <a href="" class="btn btn-primary">Modificar Cuenta</a>
+        {{ block.super }}
+    {% endblock nav_bar %}
+</div>
 {% block content %}
     <form action="" method="post">
         {% csrf_token %}

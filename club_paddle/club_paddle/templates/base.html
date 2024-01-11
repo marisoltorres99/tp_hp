@@ -12,12 +12,14 @@
         {% endblock styles %}
     </head>
     <body>
-        {% block nav_bar %}
-            {% if request.user.is_authenticated %}
-                <h2>¡Bienvenido {{ request.user.first_name }} {{ request.user.last_name }}!</h2>
-                <a href="{% url "cerrar_sesion" %}">Cerrar Sesion</a>
-            {% endif %}
-        {% endblock nav_bar %}
+        <div class="container pt-2">
+            {% block nav_bar %}
+                {% if request.user.is_authenticated %}
+                    <h2>¡Bienvenido {{ request.user.first_name }} {{ request.user.last_name }}!</h2>
+                    <a href="{% url "cerrar_sesion" %}">Cerrar Sesion</a>
+                {% endif %}
+            {% endblock nav_bar %}
+        </div>
         {% block content %}
         {% endblock content %}
         {% block footer %}

@@ -8,10 +8,12 @@ from clases.models import Clase, HorariosClases
 
 def abm_clases(request):
     if request.method == "GET":
+        # busco clases existentes para mostrar la tabla
         clases = Clase.objects.all()
         context = {"clases": clases}
         return render(request, "clases/abm_clases.html", context)
     else:
+        # cambio de estado de clase
         if "desactivar" in request.POST:
             clase_id = request.POST.get("desactivar")
             clase_qs = Clase.objects.filter(clase_id=clase_id)
@@ -33,18 +35,29 @@ def nueva_clase(request):
         {"dia": "Sabado", "hora": "horaSabado"},
         {"dia": "Domingo", "hora": "horaDomingo"},
     ]
-    if request.method == "POST":
+    if request.method == "GET":
+        mi_formulario = FormNuevaClase()
+        context = {
+            "form": mi_formulario,
+            "dias": dias,
+        }
+        return render(request, "clases/nueva_clase.html", context)
+
+    else:
+        # recupero datos del form
         mi_formulario = FormNuevaClase(request.POST)
         if mi_formulario.is_valid():
             cupo = mi_formulario.cleaned_data["cupo"]
             descripcion = mi_formulario.cleaned_data["descripcion"]
             profesor = mi_formulario.cleaned_data["profesor"]
             cancha = mi_formulario.cleaned_data["cancha"]
+            # creo nueva clase
             clase = Clase(
                 cupo=cupo, descripcion=descripcion, profesor=profesor, cancha=cancha
             )
             clase.save()
 
+            # recupero datos del form y elimino lo que no sea parte de los horarios
             datos_formulario = request.POST.dict()
 
             for key in [
@@ -57,6 +70,7 @@ def nueva_clase(request):
                 if key in datos_formulario:
                     del datos_formulario[key]
 
+            # cargo los horarios para la nueva clase
             for dia, valor in datos_formulario.items():
                 if valor == "on":
                     clase_horario = HorariosClases(clase=clase, dia=dia)
@@ -67,19 +81,7 @@ def nueva_clase(request):
                     clase_horario.save()
 
             messages.success(request, "¡Clase cargada con éxito!")
-            return HttpResponseRedirect("/clases/nueva/")
-    else:
-        mi_formulario = FormNuevaClase()
-    return render(
-        request,
-        "clases/form_clase.html",
-        {
-            "form": mi_formulario,
-            "dias": dias,
-            "boton_submit": "Cargar",
-            "abm": "Nueva Clase",
-        },
-    )
+            return HttpResponseRedirect(reverse("NuevaClase"))
 
 
 def editar_cancha(request, **kwargs):

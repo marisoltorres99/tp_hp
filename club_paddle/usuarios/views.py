@@ -3,8 +3,10 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpRequest, HttpResponse
+from django.contrib.auth.models import User
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views.generic import View
 
 from usuarios.forms import FormInicioSesion, FormNuevoCliente
@@ -73,3 +75,15 @@ def menu_principal(request):
     if request.user.is_superuser:
         return render(request, "usuarios/menu_principal_admin.html")
     return render(request, "usuarios/menu_principal_cliente.html")
+
+
+@login_required
+def mi_cuenta(request):
+    if request.method == "GET":
+        return render(request, "usuarios/mi_cuenta.html")
+    else:
+        user_id = request.POST.get("confirmar")
+        user_qs = User.objects.filter(id=user_id)
+        logout(request)
+        user_qs.update(is_active=False)
+        return HttpResponseRedirect(reverse("iniciar_sesion"))

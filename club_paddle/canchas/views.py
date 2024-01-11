@@ -132,8 +132,6 @@ def editar_cancha(request, **kwargs):
                 if key in datos_formulario:
                     del datos_formulario[key]
 
-            print(datos_formulario)
-
             # busco horarios existentes
             horarios_qs = HorariosCancha.objects.filter(cancha_id=kwargs["cancha_id"])
 

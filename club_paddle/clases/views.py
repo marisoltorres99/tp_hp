@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
@@ -84,34 +86,87 @@ def nueva_clase(request):
             return HttpResponseRedirect(reverse("NuevaClase"))
 
 
-def editar_cancha(request, **kwargs):
+def editar_clase(request, **kwargs):
+    dias = OrderedDict()
+    dias["Lunes"] = {"obj": None, "hora": "horaLunes"}
+    dias["Martes"] = {"obj": None, "hora": "horaMartes"}
+    dias["Miercoles"] = {"obj": None, "hora": "horaMiercoles"}
+    dias["Jueves"] = {"obj": None, "hora": "horaJueves"}
+    dias["Viernes"] = {"obj": None, "hora": "horaViernes"}
+    dias["Sabado"] = {"obj": None, "hora": "horaSabado"}
+    dias["Domingo"] = {"obj": None, "hora": "horaDomingo"}
+
     if request.method == "GET":
-        cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
+        # busco datos existentes de la clase para mostrarlos
+        clase = Clase.objects.get(clase_id=kwargs["clase_id"])
+
+        horarios_qs = HorariosClases.objects.filter(clase_id=kwargs["clase_id"])
+        for horario in horarios_qs:
+            dias[horario.dia]["obj"] = horario
+
         datos_iniciales = {
-            "numero": cancha.numero,
-            "precio": cancha.obtener_precio_actual,
+            "cupo": clase.cupo,
+            "descripcion": clase.descripcion,
+            "profesor": clase.profesor,
+            "cancha": clase.cancha,
         }
-        mi_formulario = FormNuevaCancha(initial=datos_iniciales)
+        mi_formulario = FormNuevaClase(initial=datos_iniciales)
         context = {
             "form": mi_formulario,
-            "boton_submit": "Modificar",
-            "abm": "Editar Cancha",
+            "dias": dias,
         }
-        return render(request, "canchas/form_cancha.html", context)
+        return render(request, "clases/editar_clase.html", context)
     else:
-        mi_formulario = FormNuevaCancha(request.POST)
+        # obtengo datos del form
+        mi_formulario = FormNuevaClase(request.POST)
         if mi_formulario.is_valid():
-            numero = mi_formulario.cleaned_data["numero"]
-            precio = mi_formulario.cleaned_data["precio"]
+            cupo = mi_formulario.cleaned_data["cupo"]
+            descripcion = mi_formulario.cleaned_data["descripcion"]
+            profesor = mi_formulario.cleaned_data["profesor"]
+            cancha = mi_formulario.cleaned_data["cancha"]
 
-            cancha_id = kwargs["cancha_id"]
-            cancha_qs = Cancha.objects.filter(cancha_id=cancha_id)
-            cancha_qs.update(numero=numero)
+            # actualizo cupo, descripcion, profesor y cancha
+            clase_id = kwargs["clase_id"]
+            clase_qs = Clase.objects.filter(clase_id=clase_id)
+            clase_qs.update(
+                cupo=cupo,
+                descripcion=descripcion,
+                profesor=profesor,
+                cancha=cancha,
+            )
 
-            cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
-            nuevo_precio = CanchaPrecios(cancha=cancha, precio=precio)
-            nuevo_precio.save()
+            clase = Clase.objects.get(clase_id=kwargs["clase_id"])
 
-            messages.success(request, "¡Cancha modificada con éxito!")
-        url_destino = reverse("EditarCancha", kwargs={"cancha_id": cancha_id})
+            # obtengo datos del form para actualizar los horarios
+            datos_formulario = request.POST.dict()
+
+            # elimino de los datos del form las claves que no sean parte de los horarios
+            for key in [
+                "csrfmiddlewaretoken",
+                "cupo",
+                "descripcion",
+                "profesor",
+                "cancha",
+            ]:
+                if key in datos_formulario:
+                    del datos_formulario[key]
+
+            # busco horarios existentes
+            horarios_qs = HorariosClases.objects.filter(clase_id=kwargs["clase_id"])
+
+            # borro horarios existentes
+            horarios_qs.delete()
+
+            # cargo los nuevos horarios
+            for dia, valor in datos_formulario.items():
+                if valor == "on":
+                    clase_horario = HorariosClases(clase=clase, dia=dia)
+                    desde_key = f"hora{dia}_desde"
+                    hasta_key = f"hora{dia}_hasta"
+                    clase_horario.hora_desde = datos_formulario.get(desde_key)
+                    clase_horario.hora_hasta = datos_formulario.get(hasta_key)
+                    clase_horario.save()
+
+            messages.success(request, "¡Clase modificada con éxito!")
+        url_destino = reverse("EditarClase", kwargs={"clase_id": clase_id})
         return HttpResponseRedirect(url_destino)

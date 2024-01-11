@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    <title>Editar Clase</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "clases/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <h2 class="container pt-2">Editar Clase</h2>
+    {% if messages %}
+        <ul class="container mb-3 mt-3 alert alert-success">
+            {% for message in messages %}
+                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="container mb-3 mt-3">
+            {% for field in form %}
+                <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                {{ field }}
+                <br>
+            {% endfor %}
+        </div>
+        <div class="container mb-3 mt-3">
+            {% for key_dia, val_dict in dias.items %}
+                <label for="{{ key_dia }}">{{ key_dia }}</label>
+                <input type="checkbox"
+                       id="{{ key_dia }}"
+                       name="{{ key_dia }}"
+                       onclick="mostrar_input_hora(this.id, '{{ val_dict.hora }}')"
+                       {% if val_dict.obj %}checked{% endif %} />
+                <span id="{{ val_dict.hora }}"
+                      {% if not val_dict.obj %}style="display: none"{% endif %}>
+                    <label for="{{ val_dict.hora }}_desde">Desde:</label>
+                    <input type="time"
+                           id="{{ val_dict.hora }}_desde"
+                           name="{{ val_dict.hora }}_desde"
+                           {% if val_dict.obj %}value="{{ val_dict.obj.hora_desde }}"{% endif %} />
+                    <label for="{{ val_dict.hora }}_hasta">Hasta:</label>
+                    <input type="time"
+                           id="{{ val_dict.hora }}_hasta"
+                           name="{{ val_dict.hora }}_hasta"
+                           {% if val_dict.obj %}value="{{ val_dict.obj.hora_hasta }}"{% endif %} />
+                </span>
+                <br>
+                <br>
+            {% endfor %}
+            <a href="{% url "Clases" %}" class="btn btn-outline-secondary">Volver</a>
+            <input type="submit" value="Modificar" class="btn btn-primary">
+        </div>
+    </form>
+{% endblock content %}
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'clases/nueva_editar.js' %}"></script>
+{% endblock scripts %}

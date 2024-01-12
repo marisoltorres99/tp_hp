@@ -13,6 +13,13 @@
     {% endblock nav_bar %}
 </div>
 {% block content %}
+    {% if messages %}
+        <ul class="container mb-3 mt-3 alert alert-danger">
+            {% for message in messages %}
+                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <form action="" method="post">
         {% csrf_token %}
         <!-- Modal -->

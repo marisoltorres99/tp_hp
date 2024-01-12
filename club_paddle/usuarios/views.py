@@ -3,6 +3,7 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -83,7 +84,15 @@ def mi_cuenta(request):
         return render(request, "usuarios/mi_cuenta.html")
     else:
         user_id = request.POST.get("confirmar")
+        password = request.POST.get("password")
+        user = User.objects.get(id=user_id)
         user_qs = User.objects.filter(id=user_id)
-        logout(request)
-        user_qs.update(is_active=False)
-        return HttpResponseRedirect(reverse("iniciar_sesion"))
+        contrasena_valida = check_password(password, user.password)
+        if contrasena_valida:
+            logout(request)
+            user_qs.update(is_active=False)
+            messages.success(request, "¡Cuenta desactivada con éxito!")
+            return HttpResponseRedirect(reverse("iniciar_sesion"))
+        else:
+            messages.error(request, "La contraseña ingresada no es correcta")
+            return HttpResponseRedirect(reverse("mi_cuenta"))

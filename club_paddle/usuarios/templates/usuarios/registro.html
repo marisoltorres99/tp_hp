@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block title %}
-    <title>Registrarse</title>
+    <title>{{ titulo }}</title>
 {% endblock title %}
 {% block content %}
-    <h2 class="container pt-2">Ingrese sus datos:</h2>
+    <h2 class="container pt-2">{{ descripcion }}</h2>
     <form action="" method="post">
         {% csrf_token %}
         <div class="container mb-3 mt-3">
             {{ form.as_p }}
             <br>
             <a href="{% url "iniciar_sesion" %}" class="btn btn-outline-secondary">Volver</a>
-            <input type="submit" value="Registrar" class="btn btn-primary">
+            <input type="submit" value="{{ boton_submit }}" class="btn btn-primary">
         </div>
     </form>
 {% endblock content %}

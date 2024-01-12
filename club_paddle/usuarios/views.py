@@ -45,8 +45,14 @@ class VRegistro(View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
-        form = FormNuevoCliente()
-        return render(request, "usuarios/registro.html", {"form": form})
+        mi_formulario = FormNuevoCliente()
+        context = {
+            "form": mi_formulario,
+            "boton_submit": "Registrar",
+            "titulo": "Registrarse",
+            "descripcion": "Ingrese sus datos",
+        }
+        return render(request, "usuarios/registro.html", context)
 
     def post(self, request):
         form = FormNuevoCliente(request.POST)
@@ -96,3 +102,47 @@ def mi_cuenta(request):
         else:
             messages.error(request, "La contraseña ingresada no es correcta")
             return HttpResponseRedirect(reverse("mi_cuenta"))
+
+
+@login_required
+def modificar_cuenta(request):
+    if request.method == "GET":
+        user = User.objects.get(id=request.user.id)
+        cliente = Cliente.objects.get(user_id=request.user.id)
+        datos_iniciales = {
+            "first_name": user.first_name,
+            "username": user.username,
+            "last_name": user.last_name,
+            "email": user.email,
+            "password1": user.password,
+            "password2": user.password,
+            "dni": cliente.dni,
+            "domicilio": cliente.domicilio,
+            "telefono": cliente.telefono,
+        }
+        mi_formulario = FormNuevoCliente(initial=datos_iniciales)
+        context = {
+            "form": mi_formulario,
+            "boton_submit": "Modificar",
+            "titulo": "Modificar Cuenta",
+            "descripcion": "Modifique su cuenta",
+        }
+        return render(request, "usuarios/registro.html", context)
+    else:
+        form = FormNuevoCliente(request.POST)
+        if form.is_valid():
+            form.save()
+            datos_modificar = {
+                "dni": mi_formulario.cleaned_data["dni"],
+                "telefono": mi_formulario.cleaned_data["telefono"],
+                "domicilio": mi_formulario.cleaned_data["domicilio"],
+            }
+            cliente_qs = Cliente.objects.filter(user_id=request.user.id)
+            cliente_qs.update(**datos_modificar)
+            messages.success(request, "¡Cuenta modificada con éxito!")
+            return redirect("mi_cuenta")
+        else:
+            for msg in form.error_messages:
+                messages.error(request, form.error_messages[msg])
+
+            return render(request, "usuarios/registro.html", {"form": form})

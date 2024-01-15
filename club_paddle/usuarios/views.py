@@ -5,12 +5,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import View
 
-from usuarios.forms import FormInicioSesion, FormNuevoCliente
+from usuarios.forms import FormInicioSesion, FormModificarCliente, FormNuevoCliente
 from usuarios.models import Cliente
 
 
@@ -107,6 +108,7 @@ def mi_cuenta(request):
 @login_required
 def modificar_cuenta(request):
     if request.method == "GET":
+        # obtener datos iniciales
         user = User.objects.get(id=request.user.id)
         cliente = Cliente.objects.get(user_id=request.user.id)
         datos_iniciales = {
@@ -114,13 +116,11 @@ def modificar_cuenta(request):
             "username": user.username,
             "last_name": user.last_name,
             "email": user.email,
-            "password1": user.password,
-            "password2": user.password,
             "dni": cliente.dni,
             "domicilio": cliente.domicilio,
             "telefono": cliente.telefono,
         }
-        mi_formulario = FormNuevoCliente(initial=datos_iniciales)
+        mi_formulario = FormModificarCliente(initial=datos_iniciales)
         context = {
             "form": mi_formulario,
             "boton_submit": "Modificar",
@@ -129,20 +129,40 @@ def modificar_cuenta(request):
         }
         return render(request, "usuarios/registro.html", context)
     else:
-        form = FormNuevoCliente(request.POST)
-        if form.is_valid():
-            form.save()
-            datos_modificar = {
-                "dni": mi_formulario.cleaned_data["dni"],
-                "telefono": mi_formulario.cleaned_data["telefono"],
-                "domicilio": mi_formulario.cleaned_data["domicilio"],
-            }
-            cliente_qs = Cliente.objects.filter(user_id=request.user.id)
-            cliente_qs.update(**datos_modificar)
-            messages.success(request, "¡Cuenta modificada con éxito!")
-            return redirect("mi_cuenta")
-        else:
-            for msg in form.error_messages:
-                messages.error(request, form.error_messages[msg])
+        mi_formulario = FormModificarCliente(request.POST, instance=request.user)
+        if mi_formulario.is_valid():
+            try:
+                mi_formulario.save()
 
-            return render(request, "usuarios/registro.html", {"form": form})
+                datos_modificar_cliente = {
+                    "dni": mi_formulario.cleaned_data["dni"],
+                    "telefono": mi_formulario.cleaned_data["telefono"],
+                    "domicilio": mi_formulario.cleaned_data["domicilio"],
+                }
+                cliente_qs = request.user.cliente
+                cliente_qs.dni = datos_modificar_cliente["dni"]
+                cliente_qs.telefono = datos_modificar_cliente["telefono"]
+                cliente_qs.domicilio = datos_modificar_cliente["domicilio"]
+                cliente_qs.save()
+
+                messages.success(request, "¡Cuenta modificada con éxito!")
+                return redirect("mi_cuenta")
+            except Exception as e:
+                messages.error(request, f"Error al modificar la cuenta: {str(e)}")
+                context = {
+                    "form": mi_formulario,
+                    "boton_submit": "Modificar",
+                    "titulo": "Modificar Cuenta",
+                    "descripcion": "Modifique su cuenta",
+                }
+                return render(request, "usuarios/registro.html", context)
+        else:
+            # for msg in mi_formulario.error_messages:
+            #    messages.error(request, mi_formulario.error_messages[msg])
+            context = {
+                "form": mi_formulario,
+                "boton_submit": "Modificar",
+                "titulo": "Modificar Cuenta",
+                "descripcion": "Modifique su cuenta",
+            }
+            return render(request, "usuarios/registro.html", context)

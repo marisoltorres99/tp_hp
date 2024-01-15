@@ -3,6 +3,7 @@ from collections import OrderedDict
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
+from profesores.models import Profesor
 
 from clases.forms import FormNuevaClase
 from clases.models import Clase, HorariosClases
@@ -170,3 +171,11 @@ def editar_clase(request, **kwargs):
             messages.success(request, "¡Clase modificada con éxito!")
         url_destino = reverse("EditarClase", kwargs={"clase_id": clase_id})
         return HttpResponseRedirect(url_destino)
+
+
+def buscar_clases(request):
+    if request.method == "GET":
+        # busco profesores existentes
+        profesores = Profesor.objects.all()
+        context = {"profesores": profesores}
+        return render(request, "clases/buscar_clases.html", context)

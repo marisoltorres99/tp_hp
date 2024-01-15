@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    <title>Buscar Clases</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "clases/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <div class="container mb-3 mt-3">
+        <form action="" method="POST">
+            <h3>Seleccione DIA para buscar clases por dia o PROFESOR para buscar clases por profesor</h3>
+            <label>
+                <input type="radio" name="buscar" value="dia">
+                DIA
+            </label>
+            <br>
+            <label>
+                <input type="radio"
+                       name="buscar"
+                       value="profesor"
+                       onclick="mostrarOcultarSelect('profesor', false)">
+                PROFESOR
+                <select name="profesor" id="profesor" style="display: none">
+                    {% for profesor in profesores %}<option value="{{ profesor.id }}">{{ profesor.nombre_apellido }}</option>{% endfor %}
+                </select>
+            </label>
+            <br>
+            <label>
+                <input type="submit" value="Buscar">
+            </label>
+        </form>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'clases/mostrar_ocultar.js' %}"></script>
+    <script>
+        function mostrarOcultarSelect(idSelect, mostrar) {
+            var select = document.getElementById(idSelect);
+            select.style.display = mostrar ? 'block' : 'none';
+        }
+    </script>
+{% endblock scripts %}

@@ -177,5 +177,18 @@ def buscar_clases(request):
     if request.method == "GET":
         # busco profesores existentes
         profesores = Profesor.objects.all()
-        context = {"profesores": profesores}
+        # armo dicc con dias de la semana
+        dias = [
+            {"dia": "Lunes"},
+            {"dia": "Martes"},
+            {"dia": "Miercoles"},
+            {"dia": "Jueves"},
+            {"dia": "Viernes"},
+            {"dia": "Sabado"},
+            {"dia": "Domingo"},
+        ]
+        context = {
+            "profesores": profesores,
+            "dias": dias,
+        }
         return render(request, "clases/buscar_clases.html", context)

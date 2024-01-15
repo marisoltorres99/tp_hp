@@ -9,18 +9,26 @@
 {% endblock styles %}
 {% block content %}
     <div class="container mb-3 mt-3">
-        <form action="" method="POST">
+        <form action="" method="post">
             <h3>Seleccione DIA para buscar clases por dia o PROFESOR para buscar clases por profesor</h3>
             <label>
-                <input type="radio" name="buscar" value="dia">
+                <input type="radio"
+                       name="buscar"
+                       value="dia"
+                       id="id_radio_dia"
+                       onclick="mostrar_ocultar_select('dia', 'id_radio_dia')">
                 DIA
+                <select name="dia" id="dia" style="display: none">
+                    {% for dia in dias %}<option value="{{ dia.dia }}">{{ dia.dia }}</option>{% endfor %}
+                </select>
             </label>
             <br>
             <label>
                 <input type="radio"
                        name="buscar"
                        value="profesor"
-                       onclick="mostrarOcultarSelect('profesor', false)">
+                       id="id_radio_prof"
+                       onclick="mostrar_ocultar_select('profesor', 'id_radio_prof')">
                 PROFESOR
                 <select name="profesor" id="profesor" style="display: none">
                     {% for profesor in profesores %}<option value="{{ profesor.id }}">{{ profesor.nombre_apellido }}</option>{% endfor %}
@@ -36,10 +44,4 @@
 {% block scripts %}
     {{ block.super }}
     <script src="{% static 'clases/mostrar_ocultar.js' %}"></script>
-    <script>
-        function mostrarOcultarSelect(idSelect, mostrar) {
-            var select = document.getElementById(idSelect);
-            select.style.display = mostrar ? 'block' : 'none';
-        }
-    </script>
 {% endblock scripts %}

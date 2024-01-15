@@ -1,4 +1,9 @@
-function mostrarOcultarSelect(idSelect, mostrar) {
+function mostrar_ocultar_select(idSelect, idRadio) {
   var select = document.getElementById(idSelect);
-  select.style.display = mostrar ? "block" : "none";
+  var radio = document.getElementById(idRadio);
+  if (radio.checked) {
+    select.style.display = "inline";
+  } else {
+    select.style.display = "none";
+  }
 }

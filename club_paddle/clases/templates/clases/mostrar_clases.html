@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    <title>ABM Clases</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "clases/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <div class="container pt-2">
+        <h2>Clases</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+            {% for clase in clases_qs %}
+                <h4>Clase {{ clase.pk }}</h4>
+                <a href="" class="btn btn-primary">Inscribir</a>
+                <table class="table table-bordered">
+                    <thead class="table-warning">
+                        <tr>
+                            <th>Dia</th>
+                            <th>Hora</th>
+                            <th>Profesor</th>
+                            <th>Descripcion</th>
+                            <th>Cancha</th>
+                        </tr>
+                    </thead>
+                    {% for horario in clase.horarios.all %}
+                        <tr>
+                            <td>{{ horario.dia }}</td>
+                            <td>{{ horario.hora_desde }}</td>
+                            <td>{{ clase.profesor.nombre_apellido }}</td>
+                            <td>{{ clase.descripcion }}</td>
+                            <td>{{ clase.cancha.numero }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endfor %}
+            <a href="{% url "buscar_clases" %}" class="btn btn-outline-secondary">Volver</a>
+        </form>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'clases/abm.js' %}"></script>
+{% endblock scripts %}

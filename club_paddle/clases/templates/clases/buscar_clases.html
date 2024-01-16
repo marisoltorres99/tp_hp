@@ -10,6 +10,7 @@
 {% block content %}
     <div class="container mb-3 mt-3">
         <form action="" method="post">
+            {% csrf_token %}
             <h3>Seleccione DIA para buscar clases por dia o PROFESOR para buscar clases por profesor</h3>
             <label>
                 <input type="radio"
@@ -31,13 +32,14 @@
                        onclick="mostrar_ocultar_select('profesor', 'id_radio_prof')">
                 PROFESOR
                 <select name="profesor" id="profesor" style="display: none">
-                    {% for profesor in profesores %}<option value="{{ profesor.id }}">{{ profesor.nombre_apellido }}</option>{% endfor %}
+                    {% for profesor in profesores %}<option value="{{ profesor.pk }}">{{ profesor.nombre_apellido }}</option>{% endfor %}
                 </select>
             </label>
             <br>
             <label>
-                <input type="submit" value="Buscar">
+                <input type="submit" value="Buscar" class="btn btn-primary">
             </label>
+            <a href="{% url "menu_principal" %}" class="btn btn-outline-secondary">Volver</a>
         </form>
     </div>
 {% endblock content %}

@@ -192,3 +192,26 @@ def buscar_clases(request):
             "dias": dias,
         }
         return render(request, "clases/buscar_clases.html", context)
+    else:
+        criterio_busqueda = request.POST.get("buscar")
+        if criterio_busqueda == "dia":
+            dia = request.POST.get("dia")
+
+            clases_qs = Clase.objects.prefetch_related("horarios").filter(
+                horarios__dia=dia
+            )
+
+        else:
+            profesor = request.POST.get("profesor")
+            clases_qs = (
+                Clase.objects.prefetch_related("horarios")
+                .select_related("profesor")
+                .filter(profesor=profesor)
+            )
+        return render(
+            request,
+            "clases/mostrar_clases.html",
+            {
+                "clases_qs": clases_qs,
+            },
+        )

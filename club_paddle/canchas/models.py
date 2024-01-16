@@ -31,7 +31,9 @@ class Cancha(models.Model):
 class CanchaPrecios(models.Model):
     precios_cancha_id = models.BigAutoField(primary_key=True)
     cancha = models.ForeignKey(
-        Cancha, on_delete=models.RESTRICT, related_name="precios"
+        Cancha,
+        on_delete=models.RESTRICT,
+        related_name="precios",
     )
     precio = models.IntegerField(null=False, blank=False)
     fecha_hora_desde = models.DateTimeField(default=timezone.now)
@@ -48,14 +50,26 @@ class CanchaPrecios(models.Model):
 class HorariosCancha(models.Model):
     horarios_cancha_id = models.BigAutoField(primary_key=True)
     cancha = models.ForeignKey(
-        Cancha, on_delete=models.RESTRICT, related_name="horarios"
+        Cancha,
+        on_delete=models.RESTRICT,
+        related_name="horarios",
     )
-    dia = models.CharField(max_length=10, null=False, blank=False)
+    dia = models.CharField(
+        max_length=10,
+        null=False,
+        blank=False,
+    )
     hora_desde = models.TimeField(
-        null=False, blank=False, auto_now=False, auto_now_add=False
+        null=False,
+        blank=False,
+        auto_now=False,
+        auto_now_add=False,
     )
     hora_hasta = models.TimeField(
-        null=False, blank=False, auto_now=False, auto_now_add=False
+        null=False,
+        blank=False,
+        auto_now=False,
+        auto_now_add=False,
     )
 
     class Meta:

@@ -3,7 +3,12 @@ from django.db import models
 
 
 class Cliente(models.Model):
-    user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User,
+        primary_key=True,
+        on_delete=models.CASCADE,
+        related_name="cliente",
+    )
     dni = models.CharField(max_length=8)
     domicilio = models.CharField(max_length=20)
     telefono = models.CharField(max_length=20)

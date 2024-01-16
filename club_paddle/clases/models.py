@@ -8,8 +8,16 @@ class Clase(models.Model):
     cupo = models.IntegerField(null=False, blank=False)
     descripcion = models.CharField(max_length=40)
     activo = models.BooleanField(default=True)
-    cancha = models.ForeignKey(Cancha, on_delete=models.RESTRICT)
-    profesor = models.ForeignKey(Profesor, on_delete=models.RESTRICT)
+    cancha = models.ForeignKey(
+        Cancha,
+        on_delete=models.RESTRICT,
+        related_name="clases",
+    )
+    profesor = models.ForeignKey(
+        Profesor,
+        on_delete=models.RESTRICT,
+        related_name="clases",
+    )
 
     class Meta:
         verbose_name = "clase"
@@ -25,13 +33,27 @@ class Clase(models.Model):
 
 class HorariosClases(models.Model):
     horarios_clase_id = models.BigAutoField(primary_key=True)
-    clase = models.ForeignKey(Clase, on_delete=models.RESTRICT, related_name="horarios")
-    dia = models.CharField(max_length=10, null=False, blank=False)
+    clase = models.ForeignKey(
+        Clase,
+        on_delete=models.RESTRICT,
+        related_name="horarios",
+    )
+    dia = models.CharField(
+        max_length=10,
+        null=False,
+        blank=False,
+    )
     hora_desde = models.TimeField(
-        null=False, blank=False, auto_now=False, auto_now_add=False
+        null=False,
+        blank=False,
+        auto_now=False,
+        auto_now_add=False,
     )
     hora_hasta = models.TimeField(
-        null=False, blank=False, auto_now=False, auto_now_add=False
+        null=False,
+        blank=False,
+        auto_now=False,
+        auto_now_add=False,
     )
 
     class Meta:

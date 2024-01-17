@@ -14,7 +14,12 @@
             {% csrf_token %}
             {% for clase in clases_qs %}
                 <h4>Clase {{ clase.pk }}</h4>
-                <a href="" class="btn btn-primary">Inscribir</a>
+                <button type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#ModalInscribir"
+                        clubpad-user-id="{{ request.user.id }}"
+                        clubpad-boton-estado-inscripcion="no_insc"
+                        class="btn btn-primary">Inscribir</button>
                 <table class="table table-bordered">
                     <thead class="table-warning">
                         <tr>
@@ -37,10 +42,31 @@
                 </table>
             {% endfor %}
             <a href="{% url "buscar_clases" %}" class="btn btn-outline-secondary">Volver</a>
+            <!-- The Modal -->
+            <div class="modal fade" id="ModalInscribir">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title"></h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button name="confirmar"
+                                    id="boton_confirmar"
+                                    type="submit"
+                                    value="insc_id"
+                                    class=""
+                                    data-bs-dismiss="modal"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 {% endblock content %}
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'clases/abm.js' %}"></script>
+    <script src="{% static 'clases/inscripcion.js' %}"></script>
 {% endblock scripts %}

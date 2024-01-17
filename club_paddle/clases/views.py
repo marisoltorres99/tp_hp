@@ -3,7 +3,9 @@ from collections import OrderedDict
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
+from inscripciones.models import Inscripcion
 from profesores.models import Profesor
+from usuarios.models import Cliente
 
 from clases.forms import FormNuevaClase
 from clases.models import Clase, HorariosClases
@@ -177,6 +179,7 @@ def buscar_clases(request):
     if request.method == "GET":
         # busco profesores existentes
         profesores = Profesor.objects.all()
+
         # armo dicc con dias de la semana
         dias = [
             {"dia": "Lunes"},
@@ -194,6 +197,7 @@ def buscar_clases(request):
         return render(request, "clases/buscar_clases.html", context)
     else:
         criterio_busqueda = request.POST.get("buscar")
+
         if criterio_busqueda == "dia":
             dia = request.POST.get("dia")
 

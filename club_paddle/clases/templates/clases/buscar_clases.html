@@ -9,6 +9,13 @@
 {% endblock styles %}
 {% block content %}
     <div class="container mb-3 mt-3">
+        {% if messages %}
+            <ul class="container mb-3 mt-3 alert alert-success">
+                {% for message in messages %}
+                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <form action="" method="post">
             {% csrf_token %}
             <h3>Seleccione DIA para buscar clases por dia o PROFESOR para buscar clases por profesor</h3>

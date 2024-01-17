@@ -1,11 +1,12 @@
 from clases.models import Clase
 from django.db import models
+from django.utils import timezone
 from usuarios.models import Cliente
 
 
 class Inscripcion(models.Model):
     inscripcion_id = models.BigAutoField(primary_key=True)
-    fecha_hora_inscripcion = models.DateTimeField(null=False, blank=False)
+    fecha_hora_inscripcion = models.DateTimeField(default=timezone.now)
     cliente = models.ForeignKey(
         Cliente,
         on_delete=models.RESTRICT,

@@ -19,7 +19,7 @@ class Cancha(models.Model):
         db_table = "canchas"
 
     def __str__(self):
-        return self.numero.__str__()
+        return str(f"Cancha ID: {self.cancha_id} Cancha Numero: {self.numero}")
 
     def mostrar_activo(self):
         return "Activada" if self.activo else "Desactivada"
@@ -78,4 +78,7 @@ class HorariosCancha(models.Model):
         db_table = "cancha_horarios"
 
     def __str__(self):
-        return self.horarios_cancha_id.__str__()
+        return str(
+            f"Dia: {self.dia} Hora Desde: {self.hora_desde}"
+            f"Hora Hasta: {self.hora_hasta} Cancha: {self.cancha}"
+        )

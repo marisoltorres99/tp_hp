@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    <title>Buscar Canchas</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "canchas/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <div class="container mb-3 mt-3">
+        {% if messages %}
+            <ul class="container mb-3 mt-3 alert alert-{{ alerta }}">
+                {% for message in messages %}
+                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="fecha" class="form-label">Elija una fecha:</label>
+                <input type="date" id="fecha" name="fecha" class="form-control">
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Buscar" class="btn btn-primary">
+                <a href="{% url "menu_principal" %}" class="btn btn-outline-secondary">Volver</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    {{ block.super }}
+{% endblock scripts %}

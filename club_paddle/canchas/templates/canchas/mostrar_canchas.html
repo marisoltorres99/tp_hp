@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    <title>Canchas Disponibles</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "canchas/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <div class="container pt-2">
+        <h2>Horarios Disponibles para fecha</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+            {% for horario in horarios_disponibles %}
+                <button type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#ModalReservar"
+                        class="btn btn-primary">Reservar</button>
+                <table class="table table-bordered">
+                    <thead class="table-warning">
+                        <tr>
+                            <th>Hora</th>
+                            <th>Cancha</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>{{ horario.hora }}</td>
+                        <td>{{ horario.cancha.numero }}</td>
+                        <td>Reservar</td>
+                    </tr>
+                </table>
+            {% endfor %}
+            <a href="{% url "buscar_canchas" %}" class="btn btn-outline-secondary">Volver</a>
+            <!-- The Modal -->
+            <div class="modal fade" id="ModalReservar">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title"></h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button name="confirmar"
+                                    id="boton_confirmar"
+                                    type="submit"
+                                    value=""
+                                    class=""
+                                    data-bs-dismiss="modal"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'canchas/reserva.js' %}"></script>
+{% endblock scripts %}

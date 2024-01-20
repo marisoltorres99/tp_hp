@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block nav_bar %}
     <a href="{% url "mi_cuenta" %}" class="btn btn-primary">Mi Cuenta</a>
-    <a href="" class="btn btn-primary">Canchas</a>
+    <a href="{% url "buscar_canchas" %}" class="btn btn-primary">Canchas</a>
     <a href="{% url "buscar_clases" %}" class="btn btn-primary">Clases</a>
     {{ block.super }}
 {% endblock nav_bar %}

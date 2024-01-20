@@ -3,6 +3,8 @@ from collections import OrderedDict
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
+from django.utils.timezone import datetime, localtime, timedelta
+from reservas.models import Reserva
 
 from canchas.forms import FormNuevaCancha
 from canchas.models import Cancha, CanchaPrecios, HorariosCancha
@@ -151,3 +153,73 @@ def editar_cancha(request, **kwargs):
             messages.success(request, "¡Cancha modificada con éxito!")
         url_destino = reverse("EditarCancha", kwargs={"cancha_id": cancha_id})
         return HttpResponseRedirect(url_destino)
+
+
+def buscar_canchas(request):
+    if request.method == "GET":
+        return render(request, "canchas/buscar_canchas.html")
+    else:
+        fecha_str = request.POST.get("fecha")
+        horarios_disponibles = calcular_horarios_disponibles(fecha_str)
+        print(horarios_disponibles)
+
+        return render(
+            request,
+            "canchas/mostrar_canchas.html",
+            {
+                "horarios_disponibles": horarios_disponibles,
+            },
+        )
+
+
+def calcular_horarios_disponibles(fecha_str):
+    fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d")
+
+    # busco reservas existentes en esa fecha
+    reservas_qs = Reserva.objects.filter(fecha_hora_reserva__date=fecha_dt.date())
+    print(reservas_qs)
+
+    # obtener el día de la semana
+    dia_semana_numero = fecha_dt.weekday()
+
+    dias_semana = {
+        0: "Lunes",
+        1: "Martes",
+        2: "Miercoles",
+        3: "Jueves",
+        4: "Viernes",
+        5: "Sabado",
+        6: "Domingo",
+    }
+
+    horarios_disponibles = []
+    intervalo = timedelta(hours=1)
+
+    horarios_qs = HorariosCancha.objects.select_related("cancha").filter(
+        dia=dias_semana[dia_semana_numero]
+    )
+
+    for horario in horarios_qs:
+        hora_inicio = horario.hora_desde
+        hora_fin = horario.hora_hasta
+
+        dia_hora = datetime.combine(fecha_dt.date(), hora_inicio)
+        cada_hora = dia_hora.time()
+
+        while cada_hora < hora_fin:
+            hay_reserva = False
+            for reserva in reservas_qs:
+                if reserva.cancha == horario.cancha:
+                    local_dt = localtime(reserva.fecha_hora_reserva)
+                    if local_dt.time() == cada_hora:
+                        hay_reserva = True
+                        break
+
+            if not hay_reserva:
+                horarios_disponibles.append(
+                    {"hora": cada_hora, "cancha": horario.cancha}
+                )
+            dia_hora = dia_hora + intervalo
+            cada_hora = dia_hora.time()
+
+    return horarios_disponibles

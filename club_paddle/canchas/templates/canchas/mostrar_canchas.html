@@ -9,14 +9,10 @@
 {% endblock styles %}
 {% block content %}
     <div class="container pt-2">
-        <h2>Horarios Disponibles para fecha</h2>
-        <form action="" method="post">
+        <h2>Horarios Disponibles para {{ fecha }}</h2>
+        <form action="{% url "NuevaReserva" %}" method="post">
             {% csrf_token %}
             {% for horario in horarios_disponibles %}
-                <button type="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#ModalReservar"
-                        class="btn btn-primary">Reservar</button>
                 <table class="table table-bordered">
                     <thead class="table-warning">
                         <tr>
@@ -28,7 +24,15 @@
                     <tr>
                         <td>{{ horario.hora }}</td>
                         <td>{{ horario.cancha.numero }}</td>
-                        <td>Reservar</td>
+                        <td>
+                            <button type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#ModalReservar"
+                                    clubpad-cancha-id="{{ horario.cancha.pk }}"
+                                    clubpad-fecha="{{ fecha }}"
+                                    clubpad-hora="{{ horario.hora }}"
+                                    class="btn btn-primary">Reservar</button>
+                        </td>
                     </tr>
                 </table>
             {% endfor %}
@@ -50,6 +54,8 @@
                                     value=""
                                     class=""
                                     data-bs-dismiss="modal"></button>
+                            <input type="hidden" id="input_fecha" value="" name="fecha">
+                            <input type="hidden" id="input_hora" value="" name="hora">
                         </div>
                     </div>
                 </div>

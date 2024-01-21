@@ -161,13 +161,13 @@ def buscar_canchas(request):
     else:
         fecha_str = request.POST.get("fecha")
         horarios_disponibles = calcular_horarios_disponibles(fecha_str)
-        print(horarios_disponibles)
 
         return render(
             request,
             "canchas/mostrar_canchas.html",
             {
                 "horarios_disponibles": horarios_disponibles,
+                "fecha": fecha_str,
             },
         )
 
@@ -177,7 +177,6 @@ def calcular_horarios_disponibles(fecha_str):
 
     # busco reservas existentes en esa fecha
     reservas_qs = Reserva.objects.filter(fecha_hora_reserva__date=fecha_dt.date())
-    print(reservas_qs)
 
     # obtener el día de la semana
     dia_semana_numero = fecha_dt.weekday()

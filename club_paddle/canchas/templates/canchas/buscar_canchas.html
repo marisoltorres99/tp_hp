@@ -16,7 +16,7 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <form action="" method="post">
+        <form action="{% url "buscar_canchas" %}" method="post">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="fecha" class="form-label">Elija una fecha:</label>

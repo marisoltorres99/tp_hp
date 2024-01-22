@@ -1,5 +1,6 @@
 from canchas.models import Cancha
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from usuarios.models import Cliente
 
@@ -43,3 +44,7 @@ class Reserva(models.Model):
 
     def __str__(self):
         return self.reserva_id.__str__()
+
+    def se_puede_cancelar(self):
+        fecha_hora_limite = timezone.now() + timezone.timedelta(hours=48)
+        return self.fecha_hora_reserva >= fecha_hora_limite

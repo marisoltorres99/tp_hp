@@ -29,8 +29,8 @@
                 <tbody>
                     {% for reserva in mis_reservas_qs %}
                         <tr>
-                            <td>{{ reserva.fecha_hora_reserva.date }}</td>
-                            <td>{{ reserva.fecha_hora_reserva|timezone:"America/Argentina/Buenos_Aires"|time:"H:i" }}</td>
+                            <td>{{ reserva.fecha_hora_reserva|date:"D d M Y" }}</td>
+                            <td>{{ reserva.fecha_hora_reserva|time:"H:i" }}</td>
                             <td>{{ reserva.estado }}</td>
                             <td>{{ reserva.fecha_hora_cance.date|default:"No Cancelada" }}</td>
                             <td>{{ reserva.pagada|default:"No" }}</td>
@@ -39,7 +39,11 @@
                                 <a href="" class="btn btn-primary">Valorar Cancha</a>
                             </td>
                             <td>
-                                <a href="" class="btn btn-danger">Cancelar</a>
+                                {% if reserva.se_puede_cancelar %}
+                                    <a href="" class="btn btn-danger">Cancelar</a>
+                                {% else %}
+                                    <a href="" class="btn btn-danger disabled">Cancelar</a>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

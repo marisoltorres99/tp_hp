@@ -1,0 +1,16 @@
+td,
+thead {
+    width: 100px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.posicionar {
+    text-align: right;
+}
+
+.centrar {
+    width: 100px;
+    margin: 0 auto;
+    text-align: center;
+}

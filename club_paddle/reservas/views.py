@@ -35,3 +35,11 @@ def nueva_reserva(request):
         nueva_reserva.save()
         messages.success(request, "¡Su reserva ha sido exitosa!")
         return HttpResponseRedirect(reverse("buscar_canchas"))
+
+
+def mostrar_reservas(request):
+    if request.method == "GET":
+        cliente = Cliente.objects.get(user_id=request.user.id)
+        mis_reservas_qs = Reserva.objects.filter(cliente=cliente)
+        context = {"mis_reservas_qs": mis_reservas_qs}
+        return render(request, "reservas/mostrar_reservas.html", context)

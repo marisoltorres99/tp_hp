@@ -2,7 +2,7 @@
 {% load static %}
 <div class="container pt-2">
     {% block nav_bar %}
-        <a href="" class="btn btn-primary">Mis Reservas</a>
+        <a href="{% url "mis_reservas" %}" class="btn btn-primary">Mis Reservas</a>
         <button type="button"
                 data-bs-toggle="modal"
                 data-bs-target="#ModalDesactivarCuenta"

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tz %}
+{% block title %}
+    <title>Mis Reservas</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "reservas/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <div class="container pt-2">
+        <h2>Mis Reservas</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+            <table class="table table-bordered">
+                <thead class="table-warning">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                        <th>Fecha Cancelacion</th>
+                        <th>Pagada</th>
+                        <th>Cancha</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in mis_reservas_qs %}
+                        <tr>
+                            <td>{{ reserva.fecha_hora_reserva.date }}</td>
+                            <td>{{ reserva.fecha_hora_reserva|timezone:"America/Argentina/Buenos_Aires"|time:"H:i" }}</td>
+                            <td>{{ reserva.estado }}</td>
+                            <td>{{ reserva.fecha_hora_cance.date|default:"No Cancelada" }}</td>
+                            <td>{{ reserva.pagada|default:"No" }}</td>
+                            <td>{{ reserva.cancha }}</td>
+                            <td>
+                                <a href="" class="btn btn-primary">Valorar Cancha</a>
+                            </td>
+                            <td>
+                                <a href="" class="btn btn-danger">Cancelar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url "mi_cuenta" %}" class="btn btn-outline-secondary">Volver</a>
+        </form>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'reservas/abm.js' %}"></script>
+{% endblock scripts %}

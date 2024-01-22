@@ -19,7 +19,7 @@ class Cancha(models.Model):
         db_table = "canchas"
 
     def __str__(self):
-        return str(f"Cancha ID: {self.cancha_id} Cancha Numero: {self.numero}")
+        return str(self.numero)
 
     def mostrar_activo(self):
         return "Activada" if self.activo else "Desactivada"

@@ -36,7 +36,11 @@
                             <td>{{ reserva.pagada|default:"No" }}</td>
                             <td>{{ reserva.cancha }}</td>
                             <td>
-                                <a href="" class="btn btn-primary">Valorar Cancha</a>
+                                {% if reserva.se_puede_valorar %}
+                                    <a href="" class="btn btn-primary">Valorar Cancha</a>
+                                {% else %}
+                                    <a href="" class="btn btn-primary disabled">Valorar Cancha</a>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if reserva.se_puede_cancelar %}

@@ -48,3 +48,6 @@ class Reserva(models.Model):
     def se_puede_cancelar(self):
         fecha_hora_limite = timezone.now() + timezone.timedelta(hours=48)
         return self.fecha_hora_reserva >= fecha_hora_limite
+
+    def se_puede_valorar(self):
+        return self.fecha_hora_reserva <= timezone.now()

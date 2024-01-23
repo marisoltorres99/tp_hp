@@ -44,3 +44,15 @@ def mostrar_reservas(request):
         mis_reservas_qs = Reserva.objects.filter(cliente=cliente)
         context = {"mis_reservas_qs": mis_reservas_qs}
         return render(request, "reservas/mostrar_reservas.html", context)
+
+
+def cancelar_reserva(request):
+    # obtengo reserva
+    reserva_id = request.POST.get("reserva")
+    reserva = Reserva.objects.get(reserva_id=reserva_id)
+    if reserva.se_puede_cancelar:
+        reserva.estado = "C"
+        reserva.fecha_hora_cance = timezone.now()
+        reserva.save()
+        messages.success(request, "¡Reserva cancelada con éxito!")
+        return HttpResponseRedirect(reverse("mis_reservas"))

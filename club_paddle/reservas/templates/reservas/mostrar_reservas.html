@@ -10,54 +10,87 @@
 {% endblock styles %}
 {% block content %}
     <div class="container pt-2">
+        {% if messages %}
+            <ul class="container mb-3 mt-3 alert alert-success">
+                {% for message in messages %}
+                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <h2>Mis Reservas</h2>
-        <form action="" method="post">
-            {% csrf_token %}
-            <table class="table table-bordered">
-                <thead class="table-warning">
+        <table class="table table-bordered">
+            <thead class="table-warning">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Fecha Cancelacion</th>
+                    <th>Pagada</th>
+                    <th>Cancha</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reserva in mis_reservas_qs %}
                     <tr>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Estado</th>
-                        <th>Fecha Cancelacion</th>
-                        <th>Pagada</th>
-                        <th>Cancha</th>
-                        <th></th>
-                        <th></th>
+                        <td>{{ reserva.fecha_hora_reserva|date:"D d M Y" }}</td>
+                        <td>{{ reserva.fecha_hora_reserva|time:"H:i" }}</td>
+                        <td>{{ reserva.estado }}</td>
+                        <td>{{ reserva.fecha_hora_cance|default:"No Cancelada" }}</td>
+                        <td>{{ reserva.pagada|default:"No" }}</td>
+                        <td>{{ reserva.cancha }}</td>
+                        <td>
+                            {% if reserva.se_puede_valorar %}
+                                <a href="" class="btn btn-primary">Valorar Cancha</a>
+                            {% else %}
+                                <button class="btn btn-primary" type="button"  disabled>Valorar Cancha</button>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if reserva.se_puede_cancelar %}
+                                <button type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#ModalCancelar"
+                                        clubpad-reserva-id="{{ reserva.pk }}"
+                                        clubpad-reserva-fecha-hora="{{ reserva.fecha_hora_reserva }}"
+                                        class="btn btn-danger">Cancelar</button>
+                            {% else %}
+                                <button class="btn btn-danger" type="button" disabled>Cancelar</button>
+                            {% endif %}
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for reserva in mis_reservas_qs %}
-                        <tr>
-                            <td>{{ reserva.fecha_hora_reserva|date:"D d M Y" }}</td>
-                            <td>{{ reserva.fecha_hora_reserva|time:"H:i" }}</td>
-                            <td>{{ reserva.estado }}</td>
-                            <td>{{ reserva.fecha_hora_cance.date|default:"No Cancelada" }}</td>
-                            <td>{{ reserva.pagada|default:"No" }}</td>
-                            <td>{{ reserva.cancha }}</td>
-                            <td>
-                                {% if reserva.se_puede_valorar %}
-                                    <a href="" class="btn btn-primary">Valorar Cancha</a>
-                                {% else %}
-                                    <a href="" class="btn btn-primary disabled">Valorar Cancha</a>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if reserva.se_puede_cancelar %}
-                                    <a href="" class="btn btn-danger">Cancelar</a>
-                                {% else %}
-                                    <a href="" class="btn btn-danger disabled">Cancelar</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <a href="{% url "mi_cuenta" %}" class="btn btn-outline-secondary">Volver</a>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url "mi_cuenta" %}" class="btn btn-outline-secondary">Volver</a>
+        <form action="{% url "cancelar_reserva" %}" method="post">
+            {% csrf_token %}
+            <!-- The Modal -->
+            <div class="modal fade" id="ModalCancelar">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title"></h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button name="reserva"
+                                    id="boton_confirmar"
+                                    type="submit"
+                                    value=""
+                                    class="btn btn-primary"
+                                    data-bs-dismiss="modal">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 {% endblock content %}
 {% block scripts %}
     {{ block.super }}
-    <script src="{% static 'reservas/abm.js' %}"></script>
+    <script src="{% static 'reservas/cancelar.js' %}"></script>
 {% endblock scripts %}

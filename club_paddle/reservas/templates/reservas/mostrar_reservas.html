@@ -42,7 +42,8 @@
                         <td>{{ reserva.cancha }}</td>
                         <td>
                             {% if reserva.se_puede_valorar %}
-                                <a href="" class="btn btn-primary">Valorar Cancha</a>
+                                <a href="{% url "nueva_valoracion" cancha_id=reserva.cancha.pk %}"
+                                   class="btn btn-primary">Valorar Cancha</a>
                             {% else %}
                                 <button class="btn btn-primary" type="button"  disabled>Valorar Cancha</button>
                             {% endif %}

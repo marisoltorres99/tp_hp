@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    <title>Valorar Cancha</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "valoraciones/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <div class="container pt-2">
+        {% if messages %}
+            <ul class="container mb-3 mt-3 alert alert-success">
+                {% for message in messages %}
+                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <h2>Valoracion de Cancha</h2>
+        <form action="{% url "nueva_valoracion" cancha_id=cancha.pk %}"
+              method="post">
+            {% csrf_token %}
+            <p>Cancha: {{ cancha.numero }}</p>
+            <p>Valoracion: {{ cancha.valoracion }}</p>
+            <p>Precio: {{ cancha.obtener_precio_actual }}</p>
+            <label for="valorar">¡Danos tu opinión! (1 a 5)</label>
+            <input type="text" id="valorar" name="valoracion">
+            <input type="submit" class="btn btn-primary" value="Valorar">
+        </form>
+        <a href="{% url "mis_reservas" %}" class="btn btn-outline-secondary">Volver</a>
+    </div>
+{% endblock content %}

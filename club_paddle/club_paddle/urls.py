@@ -28,6 +28,7 @@ urlpatterns = [
     path("inscripciones/", include("inscripciones.urls")),
     path("reservas/", include("reservas.urls")),
     path("valoraciones/", include("valoraciones.urls")),
+    path("informes/", include("informes.urls")),
     path("iniciar_sesion/", iniciar_sesion, name="iniciar_sesion"),
     path("cerrar_sesion/", cerrar_sesion, name="cerrar_sesion"),
 ]

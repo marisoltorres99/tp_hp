@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    <title>Elegir Fecha</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "informes/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <div class="container mb-3 mt-3">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <h2>Selecciones un periodo de fechas para generar el informe:</h2>
+                <label for="fechadesde" class="form-label">Desde:</label>
+                <input type="date" id="fechadesde" name="fechadesde" class="form-control">
+                <label for="fechahasta" class="form-label">Hasta:</label>
+                <input type="date" id="fechahasta" name="fechahasta" class="form-control">
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Generar Informe" class="btn btn-primary">
+                <a href="{% url "elegir_informe" %}" class="btn btn-outline-secondary">Volver</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

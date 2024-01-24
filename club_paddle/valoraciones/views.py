@@ -25,6 +25,7 @@ def nueva_valoracion(request, cancha_id):
             )
             nueva_val.save()
             messages.success(request, "¡Valoración Registrada!")
+            nueva_val.actualizar_valoracion()
             return HttpResponseRedirect(reverse("mis_reservas"))
         else:
             messages.success(request, "Ingrese una valoracion correcta")

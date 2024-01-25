@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tz %}
+{% block title %}
+    <title>Clases Solicitadas</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "informes/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <div class="container pt-2">
+        <h2>Clases solicitadas desde {{ fecha_desde }} hasta {{ fecha_hasta }}</h2>
+        <table class="table table-bordered">
+            <thead class="table-warning">
+                <tr>
+                    <th>Clase</th>
+                    <th>Profesor</th>
+                    <th>Descripcion</th>
+                    <th>Cancha</th>
+                    <th>Inscripciones durante el periodo</th>
+                    <th>TOTAL INSCRIPCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for clase in clases_solicitadas %}
+                    <tr>
+                        <td>{{ clase.pk }}</td>
+                        <td>{{ clase.profesor.nombre_apellido }}</td>
+                        <td>{{ clase.descripcion }}</td>
+                        <td>{{ clase.cancha }}</td>
+                        <td>{{ clase.num_inscripciones }}</td>
+                        <td class="celdas_vacias"></td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td class="celdas_vacias" colspan="5"></td>
+                    <td class="celda_total">{{ suma_total_inscripciones }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="{% url "elegir_fecha_clases_solicitadas" %}"
+           class="btn btn-outline-secondary">Volver</a>
+    </div>
+{% endblock content %}

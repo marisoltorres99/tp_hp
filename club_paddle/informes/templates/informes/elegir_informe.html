@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% block nav_bar %}
     <h2>Elija el tipo de informe que desea generar:</h2>
-    <a href="{% url "elegir_fecha" %}" class="btn btn-primary">Canchas Reservadas</a>
-    <a href="{% url "elegir_fecha" %}" class="btn btn-primary">Reservas Canceladas</a>
-    <a href="{% url "elegir_fecha" %}" class="btn btn-primary">Clases Solicitadas</a>
+    <a href="{% url "elegir_fecha_canchas_reservadas" %}"
+       class="btn btn-primary">Canchas Reservadas</a>
+    <a href="{% url "elegir_fecha_reservas_canceladas" %}"
+       class="btn btn-primary">Reservas Canceladas</a>
+    <a href="{% url "elegir_fecha_clases_solicitadas" %}"
+       class="btn btn-primary">Clases Solicitadas</a>
     {{ block.super }}
 {% endblock nav_bar %}
 {% block content %}

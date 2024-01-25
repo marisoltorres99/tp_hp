@@ -13,4 +13,10 @@ td, thead{
     margin: 0 auto;
     text-align: center;
 }
+.celdas_vacias{
+    background-color: lightgray !important;
+}
 
+.celda_total{
+    background-color: greenyellow !important;
+}

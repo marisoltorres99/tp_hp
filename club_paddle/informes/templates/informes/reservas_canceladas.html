@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tz %}
+{% block title %}
+    <title>Reservas Canceladas</title>
+{% endblock title %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "informes/style.css" %}">
+{% endblock styles %}
+{% block content %}
+    <div class="container pt-2">
+        <h2>Reservas canceladas desde {{ fecha_desde }} hasta {{ fecha_hasta }}</h2>
+        <table class="table table-bordered">
+            <thead class="table-warning">
+                <tr>
+                    <th>Fecha Reserva</th>
+                    <th>Hora</th>
+                    <th>Fecha Cancelacion</th>
+                    <th>Cancha</th>
+                    <th>TOTAL CANCELACIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reserva in reservas_canceladas %}
+                    <tr>
+                        <td>{{ reserva.fecha_hora_reserva|date:"D d M Y" }}</td>
+                        <td>{{ reserva.fecha_hora_reserva|time:"H:i" }}</td>
+                        <td>{{ reserva.fecha_hora_cance|default:"No Cancelada" }}</td>
+                        <td>{{ reserva.cancha }}</td>
+                        <td class="celdas_vacias"></td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td class="celdas_vacias"></td>
+                    <td class="celdas_vacias"></td>
+                    <td class="celdas_vacias"></td>
+                    <td class="celdas_vacias"></td>
+                    <td class="celda_total">{{ cantidad_reservas_canceladas }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="{% url "elegir_fecha_reservas_canceladas" %}"
+           class="btn btn-outline-secondary">Volver</a>
+    </div>
+{% endblock content %}

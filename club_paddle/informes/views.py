@@ -1,9 +1,8 @@
 from canchas.models import Cancha
 from clases.models import Clase
-from django.db.models import Count, DecimalField, ExpressionWrapper, F, Q
+from django.db.models import Count, Q, Sum
 from django.shortcuts import render
 from django.utils.timezone import datetime
-from inscripciones.models import Inscripcion
 from reservas.models import Reserva
 
 
@@ -24,24 +23,35 @@ def elegir_fecha_canchas_reservadas(request):
         fecha_hasta = datetime.strptime(fecha_hasta_str, "%Y-%m-%d").date()
 
         # busco canchas reservadas en el periodo de fechas
+        reserva_finalizada_segun_fecha = Q(
+            reservas__estado="F",
+            reservas__fecha_hora_reserva__range=[fecha_desde, fecha_hasta],
+        )
+
+        num_reservas = Count(
+            "reservas",
+            filter=reserva_finalizada_segun_fecha,
+        )
+
+        monto_total_historico = Sum(
+            "reservas__precio",
+            filter=reserva_finalizada_segun_fecha,
+        )
+
         canchas_reservadas = Cancha.objects.annotate(
-            num_reservas=Count(
-                "reservas",
-                filter=Q(
-                    reservas__estado="F",
-                    reservas__fecha_hora_reserva__range=[fecha_desde, fecha_hasta],
-                ),
-            ),
-            monto_recaudado=ExpressionWrapper(
-                F("num_reservas") * F("precios__precio"),
-                output_field=DecimalField(),
-            ),
-        ).filter(num_reservas__gt=0)
+            num_reservas=num_reservas,
+            monto_total_historico=monto_total_historico,
+        )
+
+        monto_total_general = canchas_reservadas.aggregate(
+            total_monto_general=Sum("monto_total_historico")
+        )["total_monto_general"]
 
         context = {
             "canchas_reservadas": canchas_reservadas,
             "fecha_desde": fecha_desde,
             "fecha_hasta": fecha_hasta,
+            "monto_total_general": monto_total_general,
         }
         return render(
             request,

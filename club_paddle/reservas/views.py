@@ -32,6 +32,7 @@ def nueva_reserva(request):
             cliente=cliente,
             fecha_hora_reserva=fecha_hora_dt,
             cancha=cancha,
+            precio=cancha.obtener_precio_actual(),
         )
         nueva_reserva.save()
         messages.success(request, "¡Su reserva ha sido exitosa!")

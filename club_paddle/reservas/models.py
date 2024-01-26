@@ -25,6 +25,8 @@ class Reserva(models.Model):
 
     fecha_hora_cance = models.DateTimeField(null=True, blank=True)
 
+    precio = models.IntegerField(null=True, blank=True)
+
     cliente = models.ForeignKey(
         Cliente,
         on_delete=models.RESTRICT,

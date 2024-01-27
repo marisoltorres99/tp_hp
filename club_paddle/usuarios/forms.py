@@ -60,8 +60,20 @@ class FormNuevoCliente(UserCreationForm):
 class FormInicioSesion(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # redefinir mensajes
+        mensaje = "Por favor, complete este campo"
+        oninvalid_js_action = f"this.setCustomValidity('{mensaje}')"
+        oninput_js_action = "this.setCustomValidity('')"
+
+        # agrego clases bootstrap
         self.fields["username"].widget.attrs["class"] = "form-control"
+        self.fields["username"].widget.attrs["oninvalid"] = oninvalid_js_action
+        self.fields["username"].widget.attrs["oninput"] = oninput_js_action
+
         self.fields["password"].widget.attrs["class"] = "form-control"
+        self.fields["password"].widget.attrs["oninvalid"] = oninvalid_js_action
+        self.fields["password"].widget.attrs["oninput"] = oninput_js_action
 
 
 class FormModificarCliente(UserChangeForm):

@@ -19,7 +19,9 @@ def iniciar_sesion(request):
     if request.user.is_authenticated:
         return redirect("menu_principal")
 
-    if request.method == "POST":
+    if request.method == "GET":
+        form = FormInicioSesion()
+    else:
         form = FormInicioSesion(request, data=request.POST)
         if form.is_valid():
             nombre_usuario = form.cleaned_data.get("username")
@@ -28,8 +30,7 @@ def iniciar_sesion(request):
             if usuario is not None:
                 login(request, usuario)
                 return redirect("menu_principal")
-    else:
-        form = FormInicioSesion()
+
     return render(request, "usuarios/iniciar_sesion.html", {"form": form})
 
 

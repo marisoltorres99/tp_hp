@@ -57,15 +57,28 @@ class VRegistro(View):
         return render(request, "usuarios/registro.html", context)
 
     def post(self, request):
-        form = FormNuevoCliente(request.POST)
-        if form.is_valid():
-            usuario = form.save()
+        mi_formulario = FormNuevoCliente(request.POST)
+        dni = request.POST.get("dni")
+
+        # verificar si ya existe un usuario con el mismo DNI
+        if User.objects.filter(cliente__dni=dni).exists():
+            messages.error(request, "Ya existe un usuario con el mismo DNI.")
+            context = {
+                "form": mi_formulario,
+                "boton_submit": "Registrar",
+                "titulo": "Registrarse",
+                "descripcion": "Ingrese sus datos:",
+            }
+            return render(request, "usuarios/registro.html", context)
+
+        if mi_formulario.is_valid():
+            usuario = mi_formulario.save()
 
             nuevo_cliente = Cliente(
                 user=usuario,
-                dni=form.cleaned_data["dni"],
-                domicilio=form.cleaned_data["domicilio"],
-                telefono=form.cleaned_data["telefono"],
+                dni=mi_formulario.cleaned_data["dni"],
+                domicilio=mi_formulario.cleaned_data["domicilio"],
+                telefono=mi_formulario.cleaned_data["telefono"],
             )
 
             nuevo_cliente.save()
@@ -73,10 +86,18 @@ class VRegistro(View):
             login(request, usuario)
             return redirect("menu_principal")
         else:
-            for msg in form.error_messages:
-                messages.error(request, form.error_messages[msg])
+            for field, errors in mi_formulario.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
 
-            return render(request, "usuarios/registro.html", {"form": form})
+            mi_formulario = FormNuevoCliente(request.POST)
+            context = {
+                "form": mi_formulario,
+                "boton_submit": "Registrar",
+                "titulo": "Registrarse",
+                "descripcion": "Ingrese sus datos:",
+            }
+            return render(request, "usuarios/registro.html", context)
 
 
 @login_required

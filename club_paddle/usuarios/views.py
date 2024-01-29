@@ -58,8 +58,8 @@ class VRegistro(View):
 
     def post(self, request):
         mi_formulario = FormNuevoCliente(request.POST)
-        dni = request.POST.get("dni")
 
+        dni = request.POST.get("dni")
         # verificar si ya existe un usuario con el mismo DNI
         if User.objects.filter(cliente__dni=dni).exists():
             messages.error(request, "Ya existe un usuario con el mismo DNI.")
@@ -152,6 +152,18 @@ def modificar_cuenta(request):
         return render(request, "usuarios/registro.html", context)
     else:
         mi_formulario = FormModificarCliente(request.POST, instance=request.user)
+
+        dni = request.POST.get("dni")
+        # verificar si ya existe un usuario con el mismo DNI
+        if User.objects.exclude(pk=request.user.pk).filter(cliente__dni=dni).exists():
+            messages.error(request, "Ya existe un usuario con el mismo DNI.")
+            context = {
+                "form": mi_formulario,
+                "boton_submit": "Modificar",
+                "titulo": "Modificar Cuenta",
+                "descripcion": "Modifique su cuenta",
+            }
+            return render(request, "usuarios/registro.html", context)
         if mi_formulario.is_valid():
             try:
                 mi_formulario.save()
@@ -179,8 +191,9 @@ def modificar_cuenta(request):
                 }
                 return render(request, "usuarios/registro.html", context)
         else:
-            # for msg in mi_formulario.error_messages:
-            #    messages.error(request, mi_formulario.error_messages[msg])
+            for field, errors in mi_formulario.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
             context = {
                 "form": mi_formulario,
                 "boton_submit": "Modificar",

@@ -127,22 +127,25 @@ class FormModificarCliente(UserChangeForm):
             "username": forms.TextInput(
                 attrs={
                     "class": "form-control",
+                    "placeholder": "ingrese nombre de usuario",
                 }
             ),
             "first_name": forms.TextInput(
                 attrs={
                     "class": "form-control",
+                    "placeholder": "ingrese nombre",
                 }
             ),
             "last_name": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "apellido",
+                    "placeholder": "ingrese apellido",
                 }
             ),
             "email": forms.EmailInput(
                 attrs={
                     "class": "form-control",
+                    "placeholder": "ingrese email",
                 }
             ),
         }

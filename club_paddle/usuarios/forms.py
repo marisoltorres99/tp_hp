@@ -31,22 +31,25 @@ class FormNuevoCliente(UserCreationForm):
             "username": forms.TextInput(
                 attrs={
                     "class": "form-control",
+                    "placeholder": "ingrese nombre de usuario",
                 }
             ),
             "first_name": forms.TextInput(
                 attrs={
                     "class": "form-control",
+                    "placeholder": "ingrese nombre",
                 }
             ),
             "last_name": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "apellido",
+                    "placeholder": "ingrese apellido",
                 }
             ),
             "email": forms.EmailInput(
                 attrs={
                     "class": "form-control",
+                    "placeholder": "ingrese email",
                 }
             ),
         }
@@ -54,7 +57,11 @@ class FormNuevoCliente(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["password1"].widget.attrs["class"] = "form-control"
+        self.fields["password1"].widget.attrs["placeholder"] = "ingrese contraseña"
         self.fields["password2"].widget.attrs["class"] = "form-control"
+        self.fields["password2"].widget.attrs[
+            "placeholder"
+        ] = "ingrese contraseña nuevamente"
 
 
 class FormInicioSesion(AuthenticationForm):

@@ -52,7 +52,7 @@ class VRegistro(View):
             "form": mi_formulario,
             "boton_submit": "Registrar",
             "titulo": "Registrarse",
-            "descripcion": "Ingrese sus datos",
+            "descripcion": "Ingrese sus datos:",
         }
         return render(request, "usuarios/registro.html", context)
 

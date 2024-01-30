@@ -187,8 +187,6 @@ def buscar_clases(request):
             {"dia": "Miercoles"},
             {"dia": "Jueves"},
             {"dia": "Viernes"},
-            {"dia": "Sabado"},
-            {"dia": "Domingo"},
         ]
         context = {
             "profesores": profesores,

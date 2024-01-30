@@ -37,8 +37,6 @@ def nueva_clase(request):
         {"dia": "Miercoles", "hora": "horaMiercoles"},
         {"dia": "Jueves", "hora": "horaJueves"},
         {"dia": "Viernes", "hora": "horaViernes"},
-        {"dia": "Sabado", "hora": "horaSabado"},
-        {"dia": "Domingo", "hora": "horaDomingo"},
     ]
     if request.method == "GET":
         mi_formulario = FormNuevaClase()
@@ -96,8 +94,6 @@ def editar_clase(request, **kwargs):
     dias["Miercoles"] = {"obj": None, "hora": "horaMiercoles"}
     dias["Jueves"] = {"obj": None, "hora": "horaJueves"}
     dias["Viernes"] = {"obj": None, "hora": "horaViernes"}
-    dias["Sabado"] = {"obj": None, "hora": "horaSabado"}
-    dias["Domingo"] = {"obj": None, "hora": "horaDomingo"}
 
     if request.method == "GET":
         # busco datos existentes de la clase para mostrarlos

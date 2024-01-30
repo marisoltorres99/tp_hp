@@ -206,6 +206,8 @@ def buscar_clases(request):
                 .select_related("profesor")
                 .filter(profesor=profesor)
             )
+        if not clases_qs.exists():
+            messages.success(request, "No se han encontrado clases disponibles")
         return render(
             request,
             "clases/mostrar_clases.html",

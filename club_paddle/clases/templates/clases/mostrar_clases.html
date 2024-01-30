@@ -10,6 +10,13 @@
 {% block content %}
     <div class="container pt-2">
         <h2>Clases</h2>
+        {% if messages %}
+            <ul class="container mb-3 mt-3 alert alert-warning">
+                {% for message in messages %}
+                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <form action="{% url "NuevaInscripcion" %}" method="post">
             {% csrf_token %}
             {% for clase in clases_qs %}

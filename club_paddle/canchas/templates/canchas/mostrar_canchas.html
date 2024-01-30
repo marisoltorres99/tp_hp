@@ -18,12 +18,16 @@
                         <tr>
                             <th>Hora</th>
                             <th>Cancha</th>
+                            <th>Precio</th>
+                            <th>Valoracion</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tr>
                         <td>{{ horario.hora }}</td>
                         <td>{{ horario.cancha.numero }}</td>
+                        <td>{{ horario.cancha.obtener_precio_actual }}</td>
+                        <td>{{ horario.cancha.valoracion|default:"No valorada" }}</td>
                         <td>
                             <button type="button"
                                     data-bs-toggle="modal"

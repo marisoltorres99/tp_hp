@@ -161,7 +161,11 @@ def buscar_canchas(request):
     else:
         fecha_str = request.POST.get("fecha")
         horarios_disponibles = calcular_horarios_disponibles(fecha_str)
-
+        if not horarios_disponibles:
+            messages.success(
+                request, "No hay horarios disponibles para la fecha ingresada"
+            )
+            return render(request, "canchas/buscar_canchas.html")
         return render(
             request,
             "canchas/mostrar_canchas.html",

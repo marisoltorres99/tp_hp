@@ -30,12 +30,6 @@ class Clase(models.Model):
     def mostrar_activo(self):
         return "Activada" if self.activo else "Desactivada"
 
-    def cupo_disponible(self):
-        from inscripciones.models import Inscripcion
-
-        inscripciones_clase_qs = Inscripcion.objects.filter(clase=self)
-        return inscripciones_clase_qs.count() < self.cupo
-
 
 class HorariosClases(models.Model):
     horarios_clase_id = models.BigAutoField(primary_key=True)

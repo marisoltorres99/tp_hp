@@ -19,7 +19,7 @@
         {% endif %}
         <form action="{% url "NuevaInscripcion" %}" method="post">
             {% csrf_token %}
-            {% for clase in clases_qs %}
+            {% for clase in clases_list %}
                 <h4>Clase {{ clase.pk }}</h4>
                 <button type="button"
                         data-bs-toggle="modal"

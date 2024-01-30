@@ -3,9 +3,7 @@ from collections import OrderedDict
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
-from inscripciones.models import Inscripcion
 from profesores.models import Profesor
-from usuarios.models import Cliente
 
 from clases.forms import FormNuevaClase
 from clases.models import Clase, HorariosClases
@@ -199,6 +197,12 @@ def buscar_clases(request):
                 horarios__dia=dia
             )
 
+            # filtrar las clases que tienen cupo disponible
+            clases_con_cupo_disponible = [
+                clase for clase in clases_qs if clase.cupo_disponible()
+            ]
+            print(clases_con_cupo_disponible)
+
         else:
             profesor = request.POST.get("profesor")
             clases_qs = (
@@ -206,12 +210,17 @@ def buscar_clases(request):
                 .select_related("profesor")
                 .filter(profesor=profesor)
             )
-        if not clases_qs.exists():
+
+            # filtrar las clases que tienen cupo disponible
+            clases_con_cupo_disponible = [
+                clase for clase in clases_qs if clase.cupo_disponible()
+            ]
+        if not clases_con_cupo_disponible:
             messages.success(request, "No se han encontrado clases disponibles")
         return render(
             request,
             "clases/mostrar_clases.html",
             {
-                "clases_qs": clases_qs,
+                "clases_qs": clases_con_cupo_disponible,
             },
         )

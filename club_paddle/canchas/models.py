@@ -11,7 +11,7 @@ class Cancha(models.Model):
         blank=True,
     )
     activo = models.BooleanField(default=True)
-    numero = models.IntegerField(null=False, blank=False)
+    numero = models.IntegerField(null=False, blank=False, unique=True)
 
     class Meta:
         verbose_name = "cancha"

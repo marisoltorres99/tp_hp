@@ -34,6 +34,16 @@ def nuevo_profesor(request):
         return render(request, "profesores/form_profesor.html", context)
     else:
         mi_formulario = FormNuevoProfesor(request.POST)
+        dni = request.POST.get("dni")
+        # verificar si ya existe un profesor con el mismo DNI
+        if Profesor.objects.filter(dni=dni).exists():
+            messages.error(request, "Ya existe un profesor con el mismo DNI.")
+            context = {
+                "form": mi_formulario,
+                "boton_submit": "Cargar",
+                "abm": "Nuevo Profesor",
+            }
+            return render(request, "profesores/form_profesor.html", context)
         if mi_formulario.is_valid():
             dni = mi_formulario.cleaned_data["dni"]
             nombre_apellido = mi_formulario.cleaned_data["nombre_apellido"]
@@ -72,6 +82,17 @@ def editar_profesor(request, **kwargs):
         return render(request, "profesores/form_profesor.html", context)
     else:
         mi_formulario = FormNuevoProfesor(request.POST)
+        dni = request.POST.get("dni")
+        profe_id = kwargs["profesor_id"]
+        # verificar si ya existe un profesor con el mismo DNI
+        if Profesor.objects.exclude(pk=profe_id).filter(dni=dni).exists():
+            messages.error(request, "Ya existe un profesor con el mismo DNI.")
+            context = {
+                "form": mi_formulario,
+                "boton_submit": "Modificar",
+                "abm": "Editar Profesor",
+            }
+            return render(request, "profesores/form_profesor.html", context)
         if mi_formulario.is_valid():
             datos_modificar = {
                 "dni": mi_formulario.cleaned_data["dni"],

@@ -50,6 +50,26 @@ def nueva_cancha(request):
     else:
         # recupero datos del form
         mi_formulario = FormNuevaCancha(request.POST)
+        numero = request.POST.get("numero")
+
+        # verificar si ya existe una cancha con ese mismo numero
+        if Cancha.objects.filter(numero=numero).exists():
+            messages.error(request, "Ya existe una cancha con ese numero")
+            dias = [
+                {"dia": "Lunes", "hora": "horaLunes"},
+                {"dia": "Martes", "hora": "horaMartes"},
+                {"dia": "Miercoles", "hora": "horaMiercoles"},
+                {"dia": "Jueves", "hora": "horaJueves"},
+                {"dia": "Viernes", "hora": "horaViernes"},
+                {"dia": "Sabado", "hora": "horaSabado"},
+                {"dia": "Domingo", "hora": "horaDomingo"},
+            ]
+            context = {
+                "form": mi_formulario,
+                "dias": dias,
+            }
+            return render(request, "canchas/nueva_cancha.html", context)
+
         if mi_formulario.is_valid():
             numero = mi_formulario.cleaned_data["numero"]
             precio = mi_formulario.cleaned_data["precio"]

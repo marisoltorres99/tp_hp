@@ -9,3 +9,9 @@ class FormNuevaCancha(forms.Form):
     precio = forms.IntegerField(label="Precio")
     precio.widget.attrs.update({"class": "form-control"})
     precio.widget.attrs.update({"placeholder": "ingrese precio de la cancha"})
+
+
+class FormEditarCancha(forms.Form):
+    precio = forms.IntegerField(label="Precio")
+    precio.widget.attrs.update({"class": "form-control"})
+    precio.widget.attrs.update({"placeholder": "ingrese precio de la cancha"})

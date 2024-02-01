@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.timezone import datetime, localtime, timedelta
 from reservas.models import Reserva
 
-from canchas.forms import FormNuevaCancha
+from canchas.forms import FormEditarCancha, FormNuevaCancha
 from canchas.models import Cancha, CanchaPrecios, HorariosCancha
 
 
@@ -99,26 +99,23 @@ def editar_cancha(request, **kwargs):
             dias[horario.dia]["obj"] = horario
 
         datos_iniciales = {
-            "numero": cancha.numero,
             "precio": cancha.obtener_precio_actual,
         }
-        mi_formulario = FormNuevaCancha(initial=datos_iniciales)
+        mi_formulario = FormEditarCancha(initial=datos_iniciales)
         context = {
             "form": mi_formulario,
             "dias": dias,
+            "cancha": cancha.numero,
         }
         return render(request, "canchas/editar_cancha.html", context)
     else:
         # obtengo datos del form
-        mi_formulario = FormNuevaCancha(request.POST)
+        mi_formulario = FormEditarCancha(request.POST)
         if mi_formulario.is_valid():
-            numero = mi_formulario.cleaned_data["numero"]
             precio = mi_formulario.cleaned_data["precio"]
 
-            # actualizo numero y precio
+            # actualizo precio
             cancha_id = kwargs["cancha_id"]
-            cancha_qs = Cancha.objects.filter(cancha_id=cancha_id)
-            cancha_qs.update(numero=numero)
 
             cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
 

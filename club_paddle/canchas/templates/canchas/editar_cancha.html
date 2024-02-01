@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static "canchas/style.css" %}">
 {% endblock styles %}
 {% block content %}
-    <h2 class="container pt-2">Editar Cancha</h2>
+    <h2 class="container pt-2">Editar Cancha {{ cancha }}</h2>
     {% if messages %}
         <ul class="container mb-3 mt-3 alert alert-success">
             {% for message in messages %}

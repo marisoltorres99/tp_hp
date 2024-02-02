@@ -52,4 +52,4 @@ class Reserva(models.Model):
         return self.fecha_hora_reserva >= fecha_hora_limite and self.estado == "P"
 
     def se_puede_valorar(self):
-        return self.fecha_hora_reserva <= timezone.now()
+        return self.fecha_hora_reserva <= timezone.now() and self.estado == "F"

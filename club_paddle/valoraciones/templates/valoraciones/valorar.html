@@ -23,7 +23,7 @@
             <p>Cancha: {{ cancha.numero }}</p>
             <p>Valoracion: {{ cancha.valoracion }}</p>
             <p>Precio: {{ cancha.obtener_precio_actual }}</p>
-            <label for="valorar">¡Danos tu opinión! (1 a 5)</label>
+            <label for="valorar">{{ mensaje }}</label>
             <input type="text" id="valorar" name="valoracion">
             <input type="submit" class="btn btn-primary" value="Valorar">
         </form>

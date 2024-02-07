@@ -15,7 +15,7 @@ class FormNuevoCliente(UserCreationForm):
     oninvalid_js_action = f"this.setCustomValidity('{mensaje}')"
     oninput_js_action = "this.setCustomValidity('')"
 
-    dni = forms.CharField(label="DNI", max_length=8)
+    dni = forms.CharField(label="DNI", max_length=8, min_length=8)
     dni.widget.attrs.update({"class": "form-control"})
     dni.widget.attrs.update({"placeholder": "ingrese DNI"})
     dni.widget.attrs.update({"oninvalid": oninvalid_js_action})

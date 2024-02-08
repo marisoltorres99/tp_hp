@@ -10,13 +10,7 @@
 {% block content %}
     <div class="container pt-2">
         <h2>Clases</h2>
-        {% if messages %}
-            <ul class="container mb-3 mt-3 alert alert-warning">
-                {% for message in messages %}
-                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        {% include "mensajes.html" %}
         <form action="{% url "NuevaInscripcion" %}" method="post">
             {% csrf_token %}
             {% for clase in clases_list %}
@@ -36,15 +30,17 @@
                             <th>Cancha</th>
                         </tr>
                     </thead>
-                    {% for horario in clase.horarios.all %}
-                        <tr>
-                            <td>{{ horario.dia }}</td>
-                            <td>{{ horario.hora_desde }}</td>
-                            <td>{{ clase.profesor.nombre_apellido }}</td>
-                            <td>{{ clase.descripcion }}</td>
-                            <td>{{ clase.cancha.numero }}</td>
-                        </tr>
-                    {% endfor %}
+                    <tbody>
+                        {% for horario in clase.horarios.all %}
+                            <tr>
+                                <td>{{ horario.dia }}</td>
+                                <td>{{ horario.hora_desde }}</td>
+                                <td>{{ clase.profesor.nombre_apellido }}</td>
+                                <td>{{ clase.descripcion }}</td>
+                                <td>{{ clase.cancha.numero }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             {% endfor %}
             <a href="{% url "buscar_clases" %}" class="btn btn-outline-secondary">Volver</a>

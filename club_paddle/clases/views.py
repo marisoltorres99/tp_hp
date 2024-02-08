@@ -216,7 +216,7 @@ def buscar_clases(request):
                 clase for clase in clases_qs if Inscripcion.cupo_disponible(clase)
             ]
         if not clases_con_cupo_disponible:
-            messages.success(request, "No se han encontrado clases disponibles")
+            messages.warning(request, "No se han encontrado clases disponibles")
         return render(
             request,
             "clases/mostrar_clases.html",

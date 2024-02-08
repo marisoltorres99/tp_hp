@@ -106,7 +106,7 @@ class FormInicioSesion(AuthenticationForm):
 
 
 class FormModificarCliente(UserChangeForm):
-    dni = forms.CharField(label="DNI", max_length=8)
+    dni = forms.CharField(label="DNI", max_length=8, min_length=8)
     dni.widget.attrs.update({"class": "form-control"})
     dni.widget.attrs.update({"placeholder": "ingrese DNI"})
 

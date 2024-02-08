@@ -200,7 +200,7 @@ def change_password(request):
             messages.success(request, "¡Contraseña modificada con éxito!")
             return redirect("modificar_cuenta")
         else:
-            messages.error(request, "Please correct the error below.")
+            messages.error(request, "Por favor, ingrese una contraseña correcta.")
     else:
         form = PasswordChangeForm(request.user)
     return render(request, "usuarios/change_password.html", {"form": form})

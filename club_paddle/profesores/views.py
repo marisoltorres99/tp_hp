@@ -16,10 +16,12 @@ def abm_profesores(request):
             profesor_id = request.POST.get("desactivar")
             profesor_qs = Profesor.objects.filter(profesor_id=profesor_id)
             profesor_qs.update(activo=False)
+            messages.success(request, "¡Profesor desactivado con éxito!")
         else:
             profesor_id = request.POST.get("activar")
             profesor_qs = Profesor.objects.filter(profesor_id=profesor_id)
             profesor_qs.update(activo=True)
+            messages.success(request, "¡Profesor activado con éxito!")
         return HttpResponseRedirect(reverse("Profesores"))
 
 

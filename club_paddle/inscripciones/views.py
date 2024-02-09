@@ -1,6 +1,6 @@
 from clases.models import Clase
 from django.contrib import messages
-from django.shortcuts import HttpResponseRedirect, render
+from django.shortcuts import HttpResponseRedirect
 from django.urls import reverse
 from usuarios.models import Cliente
 

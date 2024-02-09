@@ -5,13 +5,23 @@ modalInscribir.addEventListener("show.bs.modal", function (event) {
   var button = event.relatedTarget;
   // Obtengo la informacion de los atributos del boton
   var clase_id = button.getAttribute("clubpad-clase-id");
+  var profesor = button.getAttribute("clubpad-clase-profesor");
+  var desc = button.getAttribute("clubpad-clase-desc");
+  var cancha = button.getAttribute("clubpad-clase-cancha");
 
   var boton_confirmar = document.getElementById("boton_confirmar");
   boton_confirmar.setAttribute("value", clase_id);
 
   var modalTitle = modalInscribir.querySelector(".modal-title");
 
-  boton_confirmar.setAttribute("class", "btn btn-primary");
-  boton_confirmar.textContent = "Confirmar";
-  modalTitle.textContent = "¿Desea inscribirse a la clase " + clase_id + " ?";
+  modalTitle.textContent =
+    "¿Desea inscribirse a la Clase: " +
+    clase_id +
+    " Prof: " +
+    profesor +
+    " Desc: " +
+    desc +
+    " Cancha: " +
+    cancha +
+    "?";
 });

@@ -19,6 +19,9 @@
                         data-bs-toggle="modal"
                         data-bs-target="#ModalInscribir"
                         clubpad-clase-id="{{ clase.pk }}"
+                        clubpad-clase-profesor="{{ clase.profesor.nombre_apellido }}"
+                        clubpad-clase-desc="{{ clase.descripcion }}"
+                        clubpad-clase-cancha="{{ clase.cancha.numero }}"
                         class="btn btn-primary">Inscribir</button>
                 <table class="table table-bordered">
                     <thead class="table-warning">
@@ -59,8 +62,8 @@
                                     id="boton_confirmar"
                                     type="submit"
                                     value="clase_id"
-                                    class=""
-                                    data-bs-dismiss="modal"></button>
+                                    class="btn btn-primary"
+                                    data-bs-dismiss="modal">Confirmar</button>
                         </div>
                     </div>
                 </div>

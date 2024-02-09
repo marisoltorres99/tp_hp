@@ -22,10 +22,12 @@ def abm_canchas(request):
             cancha_id = request.POST.get("desactivar")
             cancha_qs = Cancha.objects.filter(cancha_id=cancha_id)
             cancha_qs.update(activo=False)
+            messages.success(request, "¡Cancha desactivada con éxito!")
         else:
             cancha_id = request.POST.get("activar")
             cancha_qs = Cancha.objects.filter(cancha_id=cancha_id)
             cancha_qs.update(activo=True)
+            messages.success(request, "¡Cancha activada con éxito!")
         return HttpResponseRedirect(reverse("Canchas"))
 
 

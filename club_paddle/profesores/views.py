@@ -39,7 +39,7 @@ def nuevo_profesor(request):
         dni = request.POST.get("dni")
         # verificar si ya existe un profesor con el mismo DNI
         if Profesor.objects.filter(dni=dni).exists():
-            messages.warning(request, "Ya existe un profesor con el mismo DNI.")
+            messages.error(request, "Ya existe un profesor con el mismo DNI.")
             context = {
                 "form": mi_formulario,
                 "boton_submit": "Cargar",
@@ -88,7 +88,7 @@ def editar_profesor(request, **kwargs):
         profe_id = kwargs["profesor_id"]
         # verificar si ya existe un profesor con el mismo DNI
         if Profesor.objects.exclude(pk=profe_id).filter(dni=dni).exists():
-            messages.warning(request, "Ya existe un profesor con el mismo DNI.")
+            messages.error(request, "Ya existe un profesor con el mismo DNI.")
             context = {
                 "form": mi_formulario,
                 "boton_submit": "Modificar",

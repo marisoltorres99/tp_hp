@@ -22,10 +22,12 @@ def abm_clases(request):
             clase_id = request.POST.get("desactivar")
             clase_qs = Clase.objects.filter(clase_id=clase_id)
             clase_qs.update(activo=False)
+            messages.success(request, "¡Clase desactivada con éxito!")
         else:
             clase_id = request.POST.get("activar")
             clase_qs = Clase.objects.filter(clase_id=clase_id)
             clase_qs.update(activo=True)
+            messages.success(request, "¡Clase activada con éxito!")
         return HttpResponseRedirect(reverse("Clases"))
 
 

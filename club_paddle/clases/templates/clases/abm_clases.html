@@ -10,6 +10,7 @@
 {% block content %}
     <div class="container pt-2">
         <h2>Clases</h2>
+        {% include "mensajes.html" %}
         <div class="container p-2 posicionar">
             <a href="{% url "NuevaClase" %}" class="btn btn-primary">Nueva Clase</a>
         </div>

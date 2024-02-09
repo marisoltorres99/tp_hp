@@ -54,7 +54,7 @@ def nueva_cancha(request):
 
         # verificar si ya existe una cancha con ese mismo numero
         if Cancha.objects.filter(numero=numero).exists():
-            messages.error(request, "Ya existe una cancha con ese numero")
+            messages.warning(request, "Ya existe una cancha con ese numero")
             dias = [
                 {"dia": "Lunes", "hora": "horaLunes"},
                 {"dia": "Martes", "hora": "horaMartes"},
@@ -179,7 +179,7 @@ def buscar_canchas(request):
         fecha_str = request.POST.get("fecha")
         horarios_disponibles = calcular_horarios_disponibles(fecha_str)
         if not horarios_disponibles:
-            messages.success(
+            messages.warning(
                 request, "No hay horarios disponibles para la fecha ingresada"
             )
             return render(request, "canchas/buscar_canchas.html")

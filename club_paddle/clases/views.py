@@ -197,7 +197,10 @@ def buscar_clases(request):
             dia = request.POST.get("dia")
 
             clases_qs = Clase.objects.prefetch_related("horarios").filter(
-                horarios__dia=dia
+                horarios__dia=dia,
+                activo=True,
+                cancha__activo=True,
+                profesor__activo=True,
             )
 
             # filtrar las clases que tienen cupo disponible
@@ -210,7 +213,12 @@ def buscar_clases(request):
             clases_qs = (
                 Clase.objects.prefetch_related("horarios")
                 .select_related("profesor")
-                .filter(profesor=profesor)
+                .filter(
+                    profesor=profesor,
+                    activo=True,
+                    cancha__activo=True,
+                    profesor__activo=True,
+                )
             )
 
             # filtrar las clases que tienen cupo disponible

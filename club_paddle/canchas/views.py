@@ -218,7 +218,8 @@ def calcular_horarios_disponibles(fecha_str):
     intervalo = timedelta(hours=1)
 
     horarios_qs = HorariosCancha.objects.select_related("cancha").filter(
-        dia=dias_semana[dia_semana_numero]
+        dia=dias_semana[dia_semana_numero],
+        cancha__activo=True,
     )
 
     for horario in horarios_qs:

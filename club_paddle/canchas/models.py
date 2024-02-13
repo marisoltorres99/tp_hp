@@ -42,6 +42,11 @@ class Cancha(models.Model):
                     ).time()
                     if (
                         hora_desde >= horario.hora_desde
+                        and hora_desde <= horario.hora_desde
+                    ):
+                        return False
+                    if (
+                        hora_hasta >= horario.hora_hasta
                         and hora_hasta <= horario.hora_hasta
                     ):
                         return False

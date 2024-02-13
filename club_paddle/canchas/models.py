@@ -27,13 +27,27 @@ class Cancha(models.Model):
     def obtener_precio_actual(self):
         return self.precios.latest("fecha_hora_desde").precio
 
-    def validar_horario(self, horario_ingresado):
-        """
-        horarios_ingresados = {
-            "Lunes": {"desde": "00:00", "hasta": "01:00"},
-            "Jueves": {"desde": "03:00", "hasta": "04:00"},
-        }
-        """
+    def validar_superposicion(self, horario_ingresado):
+        clases_qs = self.clases.all()
+        for clase in clases_qs:
+            horarios_qs = clase.horarios.all()
+            for horario in horarios_qs:
+                if horario_ingresado.dia == horario.dia:
+                    # convertir horas y minutos de cadena a objetos datetime
+                    hora_desde = timezone.datetime.strptime(
+                        horario_ingresado.hora_desde, "%H:%M"
+                    ).time()
+                    hora_hasta = timezone.datetime.strptime(
+                        horario_ingresado.hora_hasta, "%H:%M"
+                    ).time()
+                    if (
+                        hora_desde >= horario.hora_desde
+                        and hora_hasta <= horario.hora_hasta
+                    ):
+                        return False
+        return True
+
+    def validar_horario_limite(self, horario_ingresado):
         for horario in self.horarios.all():
             if horario_ingresado.dia == horario.dia:
                 # convertir horas y minutos de cadena a objetos datetime
@@ -47,7 +61,7 @@ class Cancha(models.Model):
                     return False
                 if hora_hasta > horario.hora_hasta:
                     return False
-            return True
+        return True
 
 
 class CanchaPrecios(models.Model):

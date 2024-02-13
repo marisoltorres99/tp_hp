@@ -179,7 +179,7 @@ def buscar_canchas(request):
         return render(request, "canchas/buscar_canchas.html")
     else:
         fecha_str = request.POST.get("fecha")
-        horarios_disponibles = calcular_horarios_disponibles(fecha_str)
+        horarios_disponibles = calcular_horarios_disponibles_dia(fecha_str)
         if horarios_disponibles is None:
             messages.error(
                 request,
@@ -201,7 +201,7 @@ def buscar_canchas(request):
         )
 
 
-def calcular_horarios_disponibles(fecha_str):
+def calcular_horarios_disponibles_dia(fecha_str):
     try:
         fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d")
     except ValueError:

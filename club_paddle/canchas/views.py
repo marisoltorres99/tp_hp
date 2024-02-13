@@ -180,7 +180,13 @@ def buscar_canchas(request):
     else:
         fecha_str = request.POST.get("fecha")
         horarios_disponibles = calcular_horarios_disponibles(fecha_str)
-        if not horarios_disponibles:
+        if horarios_disponibles is None:
+            messages.error(
+                request,
+                "Debe ingresar una fecha posterior al dia de hoy y con un formato valido",
+            )
+            return render(request, "canchas/buscar_canchas.html")
+        elif not horarios_disponibles:
             messages.warning(
                 request, "No hay horarios disponibles para la fecha ingresada"
             )
@@ -196,8 +202,12 @@ def buscar_canchas(request):
 
 
 def calcular_horarios_disponibles(fecha_str):
-    fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d")
-
+    try:
+        fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d")
+    except ValueError:
+        return None
+    if fecha_dt <= datetime.now():
+        return None
     # busco reservas existentes en esa fecha
     reservas_qs = Reserva.objects.filter(fecha_hora_reserva__date=fecha_dt.date())
 

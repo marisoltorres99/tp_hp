@@ -59,7 +59,6 @@ def nueva_clase(request):
             clase = Clase(
                 cupo=cupo, descripcion=descripcion, profesor=profesor, cancha=cancha
             )
-            clase.save()
 
             # recupero datos del form y elimino lo que no sea parte de los horarios
             datos_formulario = request.POST.dict()
@@ -82,7 +81,17 @@ def nueva_clase(request):
                     hasta_key = f"hora{dia}_hasta"
                     clase_horario.hora_desde = datos_formulario.get(desde_key)
                     clase_horario.hora_hasta = datos_formulario.get(hasta_key)
-                    clase_horario.save()
+                    if cancha.validar_horario(clase_horario):
+                        clase.save()
+                        clase_horario.save()
+                    else:
+                        mi_formulario = FormNuevaClase(request.POST)
+                        context = {
+                            "form": mi_formulario,
+                            "dias": dias,
+                        }
+                        messages.error(request, "Ingrese un horario valido")
+                        return render(request, "clases/nueva_clase.html", context)
 
             messages.success(request, "¡Clase cargada con éxito!")
             return HttpResponseRedirect(reverse("NuevaClase"))

@@ -27,6 +27,28 @@ class Cancha(models.Model):
     def obtener_precio_actual(self):
         return self.precios.latest("fecha_hora_desde").precio
 
+    def validar_horario(self, horario_ingresado):
+        """
+        horarios_ingresados = {
+            "Lunes": {"desde": "00:00", "hasta": "01:00"},
+            "Jueves": {"desde": "03:00", "hasta": "04:00"},
+        }
+        """
+        for horario in self.horarios.all():
+            if horario_ingresado.dia == horario.dia:
+                # convertir horas y minutos de cadena a objetos datetime
+                hora_desde = timezone.datetime.strptime(
+                    horario_ingresado.hora_desde, "%H:%M"
+                ).time()
+                hora_hasta = timezone.datetime.strptime(
+                    horario_ingresado.hora_hasta, "%H:%M"
+                ).time()
+                if hora_desde < horario.hora_desde:
+                    return False
+                if hora_hasta > horario.hora_hasta:
+                    return False
+            return True
+
 
 class CanchaPrecios(models.Model):
     precios_cancha_id = models.BigAutoField(primary_key=True)

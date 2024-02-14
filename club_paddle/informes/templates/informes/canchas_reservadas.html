@@ -28,14 +28,19 @@
                         <td>{{ cancha.numero }}</td>
                         <td>{{ cancha.num_reservas }}</td>
                         <td>{{ cancha.obtener_precio_actual }}</td>
-                        <td>{{ cancha.valoracion }}</td>
+                        <td>
+                            {{ cancha.valoracion|default_if_none:"No valorada" }}
+                            {% if cancha.valoracion is not None %}<span>&#9733;</span>{% endif %}
+                        </td>
                         <td>{{ cancha.monto_total_historico|default:"0" }}</td>
                         <td class="celdas_vacias"></td>
                     </tr>
                 {% endfor %}
                 <tr>
                     <td class="celdas_vacias" colspan="5"></td>
-                    <td class="celda_total">{{ monto_total_general }}</td>
+                    <td class="celda_total">
+                        <strong>{{ monto_total_general }}</strong>
+                    </td>
                 </tr>
             </tbody>
         </table>

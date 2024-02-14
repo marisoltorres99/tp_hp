@@ -27,7 +27,10 @@
                         <td>{{ horario.hora }}</td>
                         <td>{{ horario.cancha.numero }}</td>
                         <td>{{ horario.cancha.obtener_precio_actual }}</td>
-                        <td>{{ horario.cancha.valoracion|default:"No valorada" }}</td>
+                        <td>
+                            {{ horario.cancha.valoracion|default:"No valorada" }}
+                            {% if horario.cancha.valoracion is not None %}<span>&#9733;</span>{% endif %}
+                        </td>
                         <td>
                             <button type="button"
                                     data-bs-toggle="modal"

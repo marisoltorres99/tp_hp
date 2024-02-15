@@ -9,7 +9,7 @@
 {% endblock styles %}
 {% block content %}
     <h2 class="container pt-2">Editar Clase</h2>
-    {% include "mensajes.html" %}
+    <div class="container pt-2">{% include "mensajes.html" %}</div>
     <form action="" method="post">
         {% csrf_token %}
         <div class="container mb-3 mt-3">

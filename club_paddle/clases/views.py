@@ -169,16 +169,6 @@ def editar_clase(request, **kwargs):
             profesor = mi_formulario.cleaned_data["profesor"]
             cancha = mi_formulario.cleaned_data["cancha"]
 
-            # actualizo cupo, descripcion, profesor y cancha
-            clase_id = kwargs["clase_id"]
-            clase_qs = Clase.objects.filter(clase_id=clase_id)
-            clase_qs.update(
-                cupo=cupo,
-                descripcion=descripcion,
-                profesor=profesor,
-                cancha=cancha,
-            )
-
             clase = Clase.objects.get(clase_id=kwargs["clase_id"])
 
             # obtengo datos del form para actualizar los horarios
@@ -195,12 +185,6 @@ def editar_clase(request, **kwargs):
                 if key in datos_formulario:
                     del datos_formulario[key]
 
-            # busco horarios existentes
-            horarios_qs = HorariosClases.objects.filter(clase_id=kwargs["clase_id"])
-
-            # borro horarios existentes
-            horarios_qs.delete()
-
             # cargo los nuevos horarios
             for dia, valor in datos_formulario.items():
                 if valor == "on":
@@ -209,7 +193,57 @@ def editar_clase(request, **kwargs):
                     hasta_key = f"hora{dia}_hasta"
                     clase_horario.hora_desde = datos_formulario.get(desde_key)
                     clase_horario.hora_hasta = datos_formulario.get(hasta_key)
-                    clase_horario.save()
+                    if cancha.validar_horario_limite(clase_horario):
+                        if cancha.validar_superposicion_clase(clase_horario):
+                            if cancha.validar_superposicion_reserva(clase_horario):
+                                # busco horarios existentes
+                                horarios_qs = HorariosClases.objects.filter(
+                                    clase_id=kwargs["clase_id"]
+                                )
+                                # borro horarios existentes
+                                horarios_qs.delete()
+                                # actualizo cupo, descripcion, profesor, cancha y horarios
+                                clase_id = kwargs["clase_id"]
+                                clase_qs = Clase.objects.filter(clase_id=clase_id)
+                                clase_qs.update(
+                                    cupo=cupo,
+                                    descripcion=descripcion,
+                                    profesor=profesor,
+                                    cancha=cancha,
+                                )
+                                clase_horario.save()
+                            else:
+                                mi_formulario = FormNuevaClase(request.POST)
+                                context = {
+                                    "form": mi_formulario,
+                                    "dias": dias,
+                                }
+                                messages.warning(
+                                    request,
+                                    "El horario ingresado se superpone con una reserva existente",
+                                )
+                                return render(
+                                    request, "clases/editar_clase.html", context
+                                )
+                        else:
+                            mi_formulario = FormNuevaClase(request.POST)
+                            context = {
+                                "form": mi_formulario,
+                                "dias": dias,
+                            }
+                            messages.warning(
+                                request,
+                                "El horario ingresado se superpone con una clase existente",
+                            )
+                            return render(request, "clases/editar_clase.html", context)
+                    else:
+                        mi_formulario = FormNuevaClase(request.POST)
+                        context = {
+                            "form": mi_formulario,
+                            "dias": dias,
+                        }
+                        messages.error(request, "Ingrese un horario valido")
+                        return render(request, "clases/editar_clase.html", context)
 
             messages.success(request, "¡Clase modificada con éxito!")
         url_destino = reverse("EditarClase", kwargs={"clase_id": clase_id})

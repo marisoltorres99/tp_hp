@@ -20,13 +20,21 @@ def abm_clases(request):
         # cambio de estado de clase
         if "desactivar" in request.POST:
             clase_id = request.POST.get("desactivar")
-            clase_qs = Clase.objects.filter(clase_id=clase_id)
-            clase_qs.update(activo=False)
-            messages.success(request, "¡Clase desactivada con éxito!")
+            clase = Clase.objects.get(clase_id=clase_id)
+            if clase.validar_desactivacion():
+                clase.activo = False
+                clase.save()
+                messages.success(request, "¡Clase desactivada con éxito!")
+            else:
+                messages.error(
+                    request,
+                    "Error al desactivar clase. Existen inscripciones a la clase.",
+                )
         else:
             clase_id = request.POST.get("activar")
-            clase_qs = Clase.objects.filter(clase_id=clase_id)
-            clase_qs.update(activo=True)
+            clase = Clase.objects.get(clase_id=clase_id)
+            clase.activo = True
+            clase.save()
             messages.success(request, "¡Clase activada con éxito!")
         return HttpResponseRedirect(reverse("Clases"))
 

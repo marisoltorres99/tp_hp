@@ -30,6 +30,14 @@ class Clase(models.Model):
     def mostrar_activo(self):
         return "Activada" if self.activo else "Desactivada"
 
+    def validar_desactivacion(self):
+        inscripciones_qs = self.inscripciones.all()
+        if inscripciones_qs.exists():
+            # hay inscripciones, por lo tanto, no se puede desactivar
+            return False
+        # no hay inscripciones, por lo tanto, puede desactivarse
+        return True
+
 
 class HorariosClases(models.Model):
     horarios_clase_id = models.BigAutoField(primary_key=True)

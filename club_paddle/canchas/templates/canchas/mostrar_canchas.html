@@ -43,22 +43,6 @@
                     </tr>
                 </table>
             {% endfor %}
-            {% comment "" %}
-            <!-- Navegación entre páginas -->
-            {% if horarios_disponibles.has_previous %}
-                <a href="?pagina={{ horarios_disponibles.previous_page_number }}">Anterior</a>
-            {% endif %}
-            {% for num in horarios_disponibles.paginator.page_range %}
-                {% if horarios_disponibles.number == num %}
-                    <span>{{ num }}</span>
-                {% else %}
-                    <a href="?pagina={{ num }}">{{ num }}</a>
-                {% endif %}
-            {% endfor %}
-            {% if horarios_disponibles.has_next %}
-                <a href="?pagina={{ horarios_disponibles.next_page_number }}">Siguiente</a>
-            {% endif %}
-            {% endcomment %}
             <a href="{% url "buscar_canchas" %}"
                class="btn btn-outline-secondary espacio"
                style="margin-bottom: 30px">Volver</a>

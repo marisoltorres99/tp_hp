@@ -82,10 +82,24 @@ def nueva_clase(request):
                     clase_horario.hora_desde = datos_formulario.get(desde_key)
                     clase_horario.hora_hasta = datos_formulario.get(hasta_key)
                     if cancha.validar_horario_limite(clase_horario):
-                        if cancha.validar_superposicion(clase_horario):
-                            # guardo clase y horarios
-                            clase.save()
-                            clase_horario.save()
+                        if cancha.validar_superposicion_clase(clase_horario):
+                            if cancha.validar_superposicion_reserva(clase_horario):
+                                # guardo clase y horarios
+                                clase.save()
+                                clase_horario.save()
+                            else:
+                                mi_formulario = FormNuevaClase(request.POST)
+                                context = {
+                                    "form": mi_formulario,
+                                    "dias": dias,
+                                }
+                                messages.warning(
+                                    request,
+                                    "El horario ingresado se superpone con una reserva existente",
+                                )
+                                return render(
+                                    request, "clases/nueva_clase.html", context
+                                )
                         else:
                             mi_formulario = FormNuevaClase(request.POST)
                             context = {

@@ -27,7 +27,7 @@ class Cancha(models.Model):
     def obtener_precio_actual(self):
         return self.precios.latest("fecha_hora_desde").precio
 
-    def validar_superposicion(self, horario_ingresado):
+    def validar_superposicion_clase(self, horario_ingresado):
         clases_qs = self.clases.all()
         for clase in clases_qs:
             horarios_qs = clase.horarios.all()
@@ -50,6 +50,47 @@ class Cancha(models.Model):
                         and hora_hasta <= horario.hora_hasta
                     ):
                         return False
+        return True
+
+    def validar_superposicion_reserva(self, horario_ingresado):
+        dias_semana = {
+            0: "Lunes",
+            1: "Martes",
+            2: "Miércoles",
+            3: "Jueves",
+            4: "Viernes",
+            5: "Sábado",
+            6: "Domingo",
+        }
+        reservas_qs = self.reservas.filter(estado="P")
+        for reserva in reservas_qs:
+            dia_semana_numero = reserva.fecha_hora_reserva.weekday()
+            nombre_dia_semana = dias_semana[dia_semana_numero]
+            if horario_ingresado.dia == nombre_dia_semana:
+                hora_reserva = timezone.datetime.combine(
+                    reserva.fecha_hora_reserva.date(), reserva.fecha_hora_reserva.time()
+                )
+                # convertir horas y minutos de cadena a objetos datetime
+                hora_desde = timezone.datetime.strptime(
+                    horario_ingresado.hora_desde, "%H:%M"
+                ).time()
+                hora_hasta = timezone.datetime.strptime(
+                    horario_ingresado.hora_hasta, "%H:%M"
+                ).time()
+                hora_desde_dt = timezone.datetime.combine(
+                    reserva.fecha_hora_reserva.date(), hora_desde
+                )
+                hora_hasta_dt = timezone.datetime.combine(
+                    reserva.fecha_hora_reserva.date(), hora_hasta
+                )
+                if (
+                    hora_desde_dt <= hora_reserva <= hora_hasta_dt
+                    or hora_desde_dt
+                    <= hora_reserva + timezone.timedelta(hours=1)
+                    <= hora_hasta_dt
+                ):
+                    return False
+
         return True
 
     def validar_horario_limite(self, horario_ingresado):

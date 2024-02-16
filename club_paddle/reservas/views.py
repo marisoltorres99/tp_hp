@@ -1,3 +1,4 @@
+import pytz
 from canchas.models import Cancha
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -27,6 +28,12 @@ def nueva_reserva(request):
         hora_str = request.POST.get("hora")
 
         fecha_hora_dt = datetime.strptime(f"{fecha_str} {hora_str}", "%Y-%m-%d %H:%M")
+
+        # obtengo la zona horaria deseada
+        timezone_buenos_aires = pytz.timezone("America/Buenos_Aires")
+
+        # asignar la zona horaria a la fecha y hora de reserva
+        fecha_hora_dt = timezone_buenos_aires.localize(fecha_hora_dt)
 
         # Crear nueva reserva
         nueva_reserva = Reserva(

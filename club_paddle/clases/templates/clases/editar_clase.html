@@ -43,8 +43,13 @@
                 <br>
                 <br>
             {% endfor %}
-            <a href="{% url "Clases" %}" class="btn btn-outline-secondary">Volver</a>
-            <input type="submit" value="Modificar" class="btn btn-primary">
+            <a href="{% url "Clases" %}"
+               class="btn btn-outline-secondary"
+               style="margin-bottom: 30px">Volver</a>
+            <input type="submit"
+                   value="Modificar"
+                   class="btn btn-primary"
+                   style="margin-bottom: 30px">
         </div>
     </form>
 {% endblock content %}

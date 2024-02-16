@@ -158,6 +158,7 @@ def editar_clase(request, **kwargs):
         context = {
             "form": mi_formulario,
             "dias": dias,
+            "clase": clase,
         }
         return render(request, "clases/editar_clase.html", context)
     else:

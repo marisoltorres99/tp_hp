@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static "clases/style.css" %}">
 {% endblock styles %}
 {% block content %}
-    <h2 class="container pt-2">Editar Clase</h2>
+    <h2 class="container pt-2">Editar Clase {{ clase }}</h2>
     <div class="container pt-2">{% include "mensajes.html" %}</div>
     <form action="" method="post">
         {% csrf_token %}

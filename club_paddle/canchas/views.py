@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from clases.models import Clase, HorariosClases
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
@@ -234,22 +235,23 @@ def calcular_horarios_disponibles_dia(fecha_str):
     horarios_disponibles = []
     intervalo = timedelta(hours=1)
 
+    # busco horarios de canchas en ese dia de la semana
     horarios_canchas_qs = HorariosCancha.objects.select_related("cancha").filter(
         dia=dias_semana[dia_semana_numero],
         cancha__activo=True,
     )
 
-    for horario in horarios_canchas_qs:
-        hora_inicio = horario.hora_desde
-        hora_fin = horario.hora_hasta
+    for horario_cancha in horarios_canchas_qs:
+        hora_inicio_limite = horario_cancha.hora_desde
+        hora_fin_limite = horario_cancha.hora_hasta
 
-        dia_hora = datetime.combine(fecha_dt.date(), hora_inicio)
+        dia_hora = datetime.combine(fecha_dt.date(), hora_inicio_limite)
         cada_hora = dia_hora.time()
 
-        while cada_hora < hora_fin:
+        while cada_hora < hora_fin_limite:
             hay_reserva = False
             for reserva in reservas_qs:
-                if reserva.cancha == horario.cancha:
+                if reserva.cancha == horario_cancha.cancha:
                     local_dt = localtime(reserva.fecha_hora_reserva)
                     if local_dt.time() == cada_hora:
                         hay_reserva = True
@@ -257,9 +259,33 @@ def calcular_horarios_disponibles_dia(fecha_str):
 
             if not hay_reserva:
                 horarios_disponibles.append(
-                    {"hora": cada_hora, "cancha": horario.cancha}
+                    {"hora": cada_hora, "cancha": horario_cancha.cancha}
                 )
             dia_hora = dia_hora + intervalo
             cada_hora = dia_hora.time()
 
-    return horarios_disponibles
+    # busco horarios de clases en ese dia de la semana
+    horarios_clases_qs = HorariosClases.objects.select_related("clase").filter(
+        dia=dias_semana[dia_semana_numero],
+        clase__activo=True,
+    )
+
+    horarios_disponibles_validados = []
+
+    for horario_disponible in horarios_disponibles:
+        hay_clase = False
+        for horario_clase in horarios_clases_qs:
+            if horario_disponible["cancha"] == horario_clase.clase.cancha:
+                if horario_disponible["hora"] == horario_clase.hora_desde:
+                    hay_clase = True
+                    break
+
+        if not hay_clase:
+            horarios_disponibles_validados.append(
+                {
+                    "hora": horario_disponible["hora"],
+                    "cancha": horario_disponible["cancha"],
+                }
+            )
+
+    return horarios_disponibles_validados

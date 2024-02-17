@@ -29,7 +29,7 @@ class Cancha(models.Model):
         return self.precios.latest("fecha_hora_desde").precio
 
     def validar_superposicion_clase(self, horario_ingresado):
-        clases_qs = self.clases.all()
+        clases_qs = self.clases.exclude(clase_id=horario_ingresado.clase.clase_id)
         for clase in clases_qs:
             horarios_qs = clase.horarios.all()
             for horario in horarios_qs:
@@ -95,6 +95,10 @@ class Cancha(models.Model):
         return True
 
     def validar_horario_limite(self, horario_ingresado):
+        lista_dias = self.horarios.all().values_list("dia", flat=True)
+        if horario_ingresado.dia not in lista_dias:
+            return False
+
         for horario in self.horarios.all():
             if horario_ingresado.dia == horario.dia:
                 # convertir horas y minutos de cadena a objetos datetime

@@ -12,6 +12,7 @@ class Cancha(models.Model):
     )
     activo = models.BooleanField(default=True)
     numero = models.IntegerField(null=False, blank=False, unique=True)
+    imagen = models.ImageField(upload_to="canchas/images", blank=True, null=True)
 
     class Meta:
         verbose_name = "cancha"

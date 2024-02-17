@@ -112,16 +112,19 @@ def editar_cancha(request, **kwargs):
     dias["Sabado"] = {"obj": None, "hora": "horaSabado"}
     dias["Domingo"] = {"obj": None, "hora": "horaDomingo"}
 
+    cancha_id = kwargs.get("cancha_id")
+
     if request.method == "GET":
+
         # busco datos existentes de la cancha para mostrarlos
         cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
-
         horarios_qs = HorariosCancha.objects.filter(cancha_id=kwargs["cancha_id"])
         for horario in horarios_qs:
             dias[horario.dia]["obj"] = horario
 
         datos_iniciales = {
             "precio": cancha.obtener_precio_actual,
+            "imagen": cancha.imagen,
         }
         mi_formulario = FormEditarCancha(initial=datos_iniciales)
         context = {
@@ -132,14 +135,16 @@ def editar_cancha(request, **kwargs):
         return render(request, "canchas/editar_cancha.html", context)
     else:
         # obtengo datos del form
-        mi_formulario = FormEditarCancha(request.POST)
+        mi_formulario = FormEditarCancha(request.POST, request.FILES)
         if mi_formulario.is_valid():
             precio = mi_formulario.cleaned_data["precio"]
+            imagen = mi_formulario.cleaned_data["imagen"]
 
             # actualizo precio
-            cancha_id = kwargs["cancha_id"]
-
             cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
+
+            cancha.imagen = imagen
+            cancha.save()
 
             if cancha.obtener_precio_actual() != precio:
                 nuevo_precio = CanchaPrecios(cancha=cancha, precio=precio)
@@ -170,6 +175,8 @@ def editar_cancha(request, **kwargs):
                     cancha_horario.save()
 
             messages.success(request, "¡Cancha modificada con éxito!")
+        else:
+            messages.error(request, "Alguno de los datos ingresados no es valido")
         url_destino = reverse("EditarCancha", kwargs={"cancha_id": cancha_id})
         return HttpResponseRedirect(url_destino)
 

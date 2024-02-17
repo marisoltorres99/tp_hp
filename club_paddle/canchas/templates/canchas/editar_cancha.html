@@ -9,8 +9,8 @@
 {% endblock styles %}
 {% block content %}
     <h2 class="container pt-2">Editar Cancha {{ cancha }}</h2>
-    {% include "mensajes.html" %}
-    <form action="" method="post">
+    <div class="container pt-2">{% include "mensajes.html" %}</div>
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="container mb-3 mt-3">
             {% for field in form %}

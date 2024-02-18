@@ -84,7 +84,6 @@ def nueva_clase(request):
                     del datos_formulario[key]
 
             # solo se utiliza para poder sumarle 1hr a las hora_desde
-            date_hoy = datetime.now().date()
             intervalo_1hr = timedelta(hours=1)
 
             # cargo los horarios para la nueva clase

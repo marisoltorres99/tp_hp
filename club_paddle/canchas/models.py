@@ -30,6 +30,25 @@ class Cancha(models.Model):
     def obtener_precio_actual(self):
         return self.precios.latest("fecha_hora_desde").precio
 
+    def validar_clase_existente(self, horario_ingresado):
+        clases_qs = self.clases.all()
+        for clase in clases_qs:
+            horarios_qs = clase.horarios.all()
+            for horario in horarios_qs:
+                if horario_ingresado.dia == horario.dia:
+                    # convertir horas y minutos de cadena a objetos datetime
+                    hora_desde = timezone.datetime.strptime(
+                        horario_ingresado.hora_desde, "%H:%M"
+                    ).time()
+                    hora_hasta = timezone.datetime.strptime(
+                        horario_ingresado.hora_hasta, "%H:%M"
+                    ).time()
+                    if hora_desde > horario.hora_desde:
+                        return False
+                    if hora_hasta < horario.hora_hasta:
+                        return False
+        return True
+
     def validar_horario_limite_club(self, horario_ingresado):
         hora_desde_dt = timezone.datetime.strptime(
             horario_ingresado.hora_desde, "%H:%M"

@@ -154,15 +154,10 @@ def editar_cancha(request, **kwargs):
             precio = mi_formulario.cleaned_data["precio"]
             imagen = mi_formulario.cleaned_data["imagen"]
 
-            # actualizo precio
             cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
 
-            cancha.imagen = imagen
-            cancha.save()
-
-            if cancha.obtener_precio_actual() != precio:
-                nuevo_precio = CanchaPrecios(cancha=cancha, precio=precio)
-                nuevo_precio.save()
+            if imagen is not None:
+                cancha.imagen = imagen
 
             # obtengo datos del form para actualizar los horarios
             datos_formulario = request.POST.dict()
@@ -172,11 +167,7 @@ def editar_cancha(request, **kwargs):
                 if key in datos_formulario:
                     del datos_formulario[key]
 
-            # busco horarios existentes
-            horarios_qs = HorariosCancha.objects.filter(cancha_id=kwargs["cancha_id"])
-
-            # borro horarios existentes
-            horarios_qs.delete()
+            lista_horarios_validos = []
 
             # cargo los nuevos horarios
             for dia, valor in datos_formulario.items():
@@ -186,7 +177,43 @@ def editar_cancha(request, **kwargs):
                     hasta_key = f"hora{dia}_hasta"
                     cancha_horario.hora_desde = datos_formulario.get(desde_key)
                     cancha_horario.hora_hasta = datos_formulario.get(hasta_key)
-                    cancha_horario.save()
+                    if cancha.validar_horario_limite_club(cancha_horario):
+                        lista_horarios_validos.append(cancha_horario)
+                    else:
+                        messages.error(
+                            request, "Error al cargar cancha. Ingrese un horario valido"
+                        )
+                        context = {
+                            "form": mi_formulario,
+                            "dias": dias,
+                            "cancha": cancha.numero,
+                        }
+                        return render(request, "canchas/editar_cancha.html", context)
+
+            # guardo cancha, precio y horario
+            cancha.save()
+            # actualizo precio
+            if cancha.obtener_precio_actual() != precio:
+                nuevo_precio = CanchaPrecios(cancha=cancha, precio=precio)
+                nuevo_precio.save()
+            cancha_horario.save()
+
+            if lista_horarios_validos:
+                # busco horarios existentes
+                horarios_qs = HorariosCancha.objects.filter(
+                    cancha_id=kwargs["cancha_id"]
+                )
+                # borro horarios existentes
+                horarios_qs.delete()
+                # cargo horarios actualizados
+                HorariosCancha.objects.bulk_create(lista_horarios_validos)
+            else:
+                # busco horarios existentes
+                horarios_qs = HorariosCancha.objects.filter(
+                    cancha_id=kwargs["cancha_id"]
+                )
+                # borro horarios existentes
+                horarios_qs.delete()
 
             messages.success(request, "¡Cancha modificada con éxito!")
         else:

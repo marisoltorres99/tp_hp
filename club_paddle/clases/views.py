@@ -209,21 +209,26 @@ def editar_clase(request, **kwargs):
                 if valor == "on":
                     clase_horario = HorariosClases(clase=clase, dia=dia)
                     desde_key = f"hora{dia}_desde"
-                    hasta_key = f"hora{dia}_hasta"
                     clase_horario.hora_desde = datos_formulario.get(desde_key)
-                    clase_horario.hora_hasta = datos_formulario.get(hasta_key)
                     dias[dia]["obj"] = clase_horario
 
             lista_horarios_validos = []
+
+            # solo se utiliza para poder sumarle 1hr a las hora_desde
+            intervalo_1hr = timedelta(hours=1)
 
             # cargo los nuevos horarios
             for dia, valor in datos_formulario.items():
                 if valor == "on":
                     clase_horario = HorariosClases(clase=clase, dia=dia)
                     desde_key = f"hora{dia}_desde"
-                    hasta_key = f"hora{dia}_hasta"
-                    clase_horario.hora_desde = datos_formulario.get(desde_key)
-                    clase_horario.hora_hasta = datos_formulario.get(hasta_key)
+                    hora_desde = datos_formulario.get(desde_key)
+                    clase_horario.hora_desde = hora_desde
+                    dt_hora_desde = datetime.strptime(hora_desde, "%H:%M")
+
+                    hora_hasta = (dt_hora_desde + intervalo_1hr).time()
+
+                    clase_horario.hora_hasta = hora_hasta.strftime("%H:%M")
                     if cancha.validar_horario_limite(clase_horario):
                         if cancha.validar_superposicion_clase(clase_horario):
                             if cancha.validar_superposicion_reserva(clase_horario):

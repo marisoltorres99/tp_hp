@@ -4,6 +4,7 @@ from canchas.models import Cancha
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse
+from django.utils.timezone import datetime, timedelta
 from inscripciones.models import Inscripcion
 from profesores.models import Profesor
 
@@ -82,14 +83,26 @@ def nueva_clase(request):
                 if key in datos_formulario:
                     del datos_formulario[key]
 
+            # solo se utiliza para poder sumarle 1hr a las hora_desde
+            date_hoy = datetime.now().date()
+            intervalo_1hr = timedelta(hours=1)
+
             # cargo los horarios para la nueva clase
             for dia, valor in datos_formulario.items():
                 if valor == "on":
                     clase_horario = HorariosClases(clase=clase, dia=dia)
                     desde_key = f"hora{dia}_desde"
-                    hasta_key = f"hora{dia}_hasta"
-                    clase_horario.hora_desde = datos_formulario.get(desde_key)
-                    clase_horario.hora_hasta = datos_formulario.get(hasta_key)
+                    # hasta_key = f"hora{dia}_hasta"
+                    hora_desde = datos_formulario.get(desde_key)
+                    clase_horario.hora_desde = hora_desde
+
+                    dt_hora_desde = datetime.strptime(hora_desde, "%H:%M")
+
+                    hora_hasta = (dt_hora_desde + intervalo_1hr).time()
+
+                    clase_horario.hora_hasta = hora_hasta.strftime("%H:%M")
+
+                    # clase_horario.hora_hasta = datos_formulario.get(hasta_key)
                     if cancha.validar_horario_limite(clase_horario):
                         if cancha.validar_superposicion_clase(clase_horario):
                             if cancha.validar_superposicion_reserva(clase_horario):

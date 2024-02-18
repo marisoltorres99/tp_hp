@@ -1,3 +1,5 @@
+from datetime import time
+
 from django.db import models
 from django.utils import timezone
 
@@ -27,6 +29,25 @@ class Cancha(models.Model):
 
     def obtener_precio_actual(self):
         return self.precios.latest("fecha_hora_desde").precio
+
+    def validar_horario_limite_club(self, horario_ingresado):
+        hora_desde_dt = timezone.datetime.strptime(
+            horario_ingresado.hora_desde, "%H:%M"
+        ).time()
+        hora_hasta_dt = timezone.datetime.strptime(
+            horario_ingresado.hora_hasta, "%H:%M"
+        ).time()
+
+        hora_inicio_club = time(8, 0)  # 8:00 a.m.
+        hora_fin_club = time(20, 0)  # 8:00 p.m.
+
+        if (
+            hora_inicio_club <= hora_desde_dt <= hora_fin_club
+            and hora_inicio_club <= hora_hasta_dt <= hora_fin_club
+        ):
+            return True
+        else:
+            return False
 
     def validar_superposicion_clase(self, horario_ingresado):
         clases_qs = self.clases.exclude(clase_id=horario_ingresado.clase.clase_id)

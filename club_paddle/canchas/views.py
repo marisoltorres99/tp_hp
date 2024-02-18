@@ -78,9 +78,7 @@ def nueva_cancha(request):
             precio = mi_formulario.cleaned_data["precio"]
             # creo nueva cancha y nuevo precio para la cancha
             cancha = Cancha(numero=numero)
-            cancha.save()
             cancha_precio = CanchaPrecios(cancha=cancha, precio=precio)
-            cancha_precio.save()
 
             # recupero datos del form y elimino lo que no sea parte de los horarios
             datos_formulario = request.POST.dict()
@@ -92,12 +90,27 @@ def nueva_cancha(request):
             # cargo los horarios para la nueva cancha
             for dia, valor in datos_formulario.items():
                 if valor == "on":
-                    cancha_horario = HorariosCancha(cancha=cancha, dia=dia)
+                    cancha_horario = HorariosCancha(
+                        cancha=cancha, dia=dia
+                    )  # type:Cancha
                     desde_key = f"hora{dia}_desde"
                     hasta_key = f"hora{dia}_hasta"
                     cancha_horario.hora_desde = datos_formulario.get(desde_key)
                     cancha_horario.hora_hasta = datos_formulario.get(hasta_key)
-                    cancha_horario.save()
+                    if cancha.validar_horario_limite_club(cancha_horario):
+                        # guardo cancha, precio y horario
+                        cancha.save()
+                        cancha_precio.save()
+                        cancha_horario.save()
+                    else:
+                        messages.error(
+                            request, "Error al cargar cancha. Ingrese un horario valido"
+                        )
+                        context = {
+                            "form": mi_formulario,
+                            "dias": dias,
+                        }
+                        return render(request, "canchas/nueva_cancha.html", context)
 
             messages.success(request, "¡Cancha cargada con éxito!")
             return HttpResponseRedirect(reverse("NuevaCancha"))

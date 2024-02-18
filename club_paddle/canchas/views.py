@@ -179,7 +179,21 @@ def editar_cancha(request, **kwargs):
                     cancha_horario.hora_hasta = datos_formulario.get(hasta_key)
                     if cancha.validar_horario_limite_club(cancha_horario):
                         if cancha.validar_clase_existente(cancha_horario):
-                            lista_horarios_validos.append(cancha_horario)
+                            if cancha.validar_reserva_existente(cancha_horario):
+                                lista_horarios_validos.append(cancha_horario)
+                            else:
+                                messages.error(
+                                    request,
+                                    "Error al modificar cancha. El horario ingresado afecta a una reserva pendiente.",
+                                )
+                                context = {
+                                    "form": mi_formulario,
+                                    "dias": dias,
+                                    "cancha": cancha.numero,
+                                }
+                                return render(
+                                    request, "canchas/editar_cancha.html", context
+                                )
                         else:
                             messages.error(
                                 request,
@@ -193,7 +207,6 @@ def editar_cancha(request, **kwargs):
                             return render(
                                 request, "canchas/editar_cancha.html", context
                             )
-
                     else:
                         messages.error(
                             request,

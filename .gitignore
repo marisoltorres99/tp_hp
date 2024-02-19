@@ -163,4 +163,4 @@ cython_debug/
 # No trackear archivos de configs personalizadas
 **/settings/__init__.py
 # no trackear imagenes
-media/
+club_paddle/club_paddle/media/

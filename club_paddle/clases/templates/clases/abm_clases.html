@@ -10,6 +10,7 @@
 {% block content %}
     <div class="container pt-2">
         <h2>Clases</h2>
+        {% include "mensajes.html" %}
         <div class="container p-2 posicionar">
             <a href="{% url "NuevaClase" %}" class="btn btn-primary">Nueva Clase</a>
         </div>
@@ -61,7 +62,9 @@
                     </tr>
                 {% endfor %}
             </table>
-            <a href="{% url "menu_principal" %}" class="btn btn-outline-secondary">Volver</a>
+            <a href="{% url "menu_principal" %}"
+               class="btn btn-outline-secondary"
+               style="margin-bottom: 30px">Volver</a>
             <!-- The Modal -->
             <div class="modal fade" id="ModalEstadoClase">
                 <div class="modal-dialog">

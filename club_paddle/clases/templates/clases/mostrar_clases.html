@@ -10,21 +10,18 @@
 {% block content %}
     <div class="container pt-2">
         <h2>Clases</h2>
-        {% if messages %}
-            <ul class="container mb-3 mt-3 alert alert-warning">
-                {% for message in messages %}
-                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        {% include "mensajes.html" %}
         <form action="{% url "NuevaInscripcion" %}" method="post">
             {% csrf_token %}
-            {% for clase in clases_qs %}
+            {% for clase in clases_list %}
                 <h4>Clase {{ clase.pk }}</h4>
                 <button type="button"
                         data-bs-toggle="modal"
                         data-bs-target="#ModalInscribir"
                         clubpad-clase-id="{{ clase.pk }}"
+                        clubpad-clase-profesor="{{ clase.profesor.nombre_apellido }}"
+                        clubpad-clase-desc="{{ clase.descripcion }}"
+                        clubpad-clase-cancha="{{ clase.cancha.numero }}"
                         class="btn btn-primary">Inscribir</button>
                 <table class="table table-bordered">
                     <thead class="table-warning">
@@ -36,18 +33,22 @@
                             <th>Cancha</th>
                         </tr>
                     </thead>
-                    {% for horario in clase.horarios.all %}
-                        <tr>
-                            <td>{{ horario.dia }}</td>
-                            <td>{{ horario.hora_desde }}</td>
-                            <td>{{ clase.profesor.nombre_apellido }}</td>
-                            <td>{{ clase.descripcion }}</td>
-                            <td>{{ clase.cancha.numero }}</td>
-                        </tr>
-                    {% endfor %}
+                    <tbody>
+                        {% for horario in clase.horarios.all %}
+                            <tr>
+                                <td>{{ horario.dia }}</td>
+                                <td>{{ horario.hora_desde }}</td>
+                                <td>{{ clase.profesor.nombre_apellido }}</td>
+                                <td>{{ clase.descripcion }}</td>
+                                <td>{{ clase.cancha.numero }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             {% endfor %}
-            <a href="{% url "buscar_clases" %}" class="btn btn-outline-secondary">Volver</a>
+            <a href="{% url "buscar_clases" %}"
+               class="btn btn-outline-secondary"
+               style="margin-bottom: 30px">Volver</a>
             <!-- The Modal -->
             <div class="modal fade" id="ModalInscribir">
                 <div class="modal-dialog">
@@ -63,8 +64,8 @@
                                     id="boton_confirmar"
                                     type="submit"
                                     value="clase_id"
-                                    class=""
-                                    data-bs-dismiss="modal"></button>
+                                    class="btn btn-primary"
+                                    data-bs-dismiss="modal">Confirmar</button>
                         </div>
                     </div>
                 </div>

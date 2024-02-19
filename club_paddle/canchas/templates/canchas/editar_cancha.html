@@ -8,15 +8,9 @@
     <link rel="stylesheet" href="{% static "canchas/style.css" %}">
 {% endblock styles %}
 {% block content %}
-    <h2 class="container pt-2">Editar Cancha</h2>
-    {% if messages %}
-        <ul class="container mb-3 mt-3 alert alert-success">
-            {% for message in messages %}
-                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <form action="" method="post">
+    <h2 class="container pt-2">Editar Cancha {{ cancha }}</h2>
+    <div class="container pt-2">{% include "mensajes.html" %}</div>
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="container mb-3 mt-3">
             {% for field in form %}
@@ -49,8 +43,13 @@
                 <br>
                 <br>
             {% endfor %}
-            <a href="{% url "Canchas" %}" class="btn btn-outline-secondary">Volver</a>
-            <input type="submit" value="Modificar" class="btn btn-primary">
+            <a href="{% url "Canchas" %}"
+               class="btn btn-outline-secondary"
+               style="margin-bottom: 30px">Volver</a>
+            <input type="submit"
+                   value="Modificar"
+                   class="btn btn-primary"
+                   style="margin-bottom: 30px">
         </div>
     </form>
 {% endblock content %}

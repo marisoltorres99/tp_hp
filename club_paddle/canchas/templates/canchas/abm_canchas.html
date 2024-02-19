@@ -10,6 +10,7 @@
 {% block content %}
     <div class="container pt-2">
         <h2>Canchas</h2>
+        {% include "mensajes.html" %}
         <div class="container p-2 posicionar">
             <a href="{% url "NuevaCancha" %}" class="btn btn-primary">Nueva Cancha</a>
         </div>
@@ -30,7 +31,10 @@
                     <tr>
                         <td>{{ c.numero }}</td>
                         <td>{{ c.obtener_precio_actual }}</td>
-                        <td>{{ c.valoracion|default_if_none:"No valorada" }}</td>
+                        <td>
+                            {{ c.valoracion|default_if_none:"No valorada" }}
+                            {% if c.valoracion is not None %}<span>&#9733;</span>{% endif %}
+                        </td>
                         <td>{{ c.mostrar_activo }}</td>
                         <td>
                             <a href="{% url "EditarCancha" cancha_id=c.pk %}"
@@ -60,7 +64,9 @@
                     </tr>
                 {% endfor %}
             </table>
-            <a href="{% url "menu_principal" %}" class="btn btn-outline-secondary">Volver</a>
+            <a href="{% url "menu_principal" %}"
+               class="btn btn-outline-secondary"
+               style="margin-bottom: 30px">Volver</a>
             <!-- Modal -->
             <div class="modal fade" id="ModalEstadoCancha">
                 <div class="modal-dialog">

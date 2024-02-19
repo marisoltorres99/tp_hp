@@ -8,14 +8,8 @@
     <link rel="stylesheet" href="{% static "clases/style.css" %}">
 {% endblock styles %}
 {% block content %}
-    <h2 class="container pt-2">Editar Clase</h2>
-    {% if messages %}
-        <ul class="container mb-3 mt-3 alert alert-success">
-            {% for message in messages %}
-                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <h2 class="container pt-2">Editar Clase {{ clase }}</h2>
+    <div class="container pt-2">{% include "mensajes.html" %}</div>
     <form action="" method="post">
         {% csrf_token %}
         <div class="container mb-3 mt-3">
@@ -40,17 +34,17 @@
                            id="{{ val_dict.hora }}_desde"
                            name="{{ val_dict.hora }}_desde"
                            {% if val_dict.obj %}value="{{ val_dict.obj.hora_desde }}"{% endif %} />
-                    <label for="{{ val_dict.hora }}_hasta">Hasta:</label>
-                    <input type="time"
-                           id="{{ val_dict.hora }}_hasta"
-                           name="{{ val_dict.hora }}_hasta"
-                           {% if val_dict.obj %}value="{{ val_dict.obj.hora_hasta }}"{% endif %} />
                 </span>
                 <br>
                 <br>
             {% endfor %}
-            <a href="{% url "Clases" %}" class="btn btn-outline-secondary">Volver</a>
-            <input type="submit" value="Modificar" class="btn btn-primary">
+            <a href="{% url "Clases" %}"
+               class="btn btn-outline-secondary"
+               style="margin-bottom: 30px">Volver</a>
+            <input type="submit"
+                   value="Modificar"
+                   class="btn btn-primary"
+                   style="margin-bottom: 30px">
         </div>
     </form>
 {% endblock content %}

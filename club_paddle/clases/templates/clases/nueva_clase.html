@@ -9,13 +9,7 @@
 {% endblock styles %}
 {% block content %}
     <h2 class="container pt-2">Nueva Clase</h2>
-    {% if messages %}
-        <ul class="container mb-3 mt-3 alert alert-success">
-            {% for message in messages %}
-                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="container pt-2">{% include "mensajes.html" %}</div>
     <form action="" method="post">
         {% csrf_token %}
         <div class="container mb-3 mt-3">
@@ -26,23 +20,31 @@
             {% endfor %}
         </div>
         <div class="container mb-3 mt-3">
-            {% for d in dias %}
-                <label for="{{ d.dia }}">{{ d.dia }}</label>
+            {% for key_dia, val_dict in dias.items %}
+                <label for="{{ key_dia }}">{{ key_dia }}</label>
                 <input type="checkbox"
-                       id="{{ d.dia }}"
-                       name="{{ d.dia }}"
-                       onclick="mostrar_input_hora(this.id, '{{ d.hora }}')">
-                <span id="{{ d.hora }}" style="display: none">
-                    <label for="{{ d.hora }}_desde">Desde:</label>
-                    <input type="time" id="{{ d.hora }}_desde" name="{{ d.hora }}_desde">
-                    <label for="{{ d.hora }}_hasta">Hasta:</label>
-                    <input type="time" id="{{ d.hora }}_hasta" name="{{ d.hora }}_hasta">
+                       id="{{ key_dia }}"
+                       name="{{ key_dia }}"
+                       onclick="mostrar_input_hora(this.id, '{{ val_dict.hora }}')"
+                       {% if val_dict.obj %}checked{% endif %} />
+                <span id="{{ val_dict.hora }}"
+                      {% if not val_dict.obj %}style="display: none"{% endif %}>
+                    <label for="{{ val_dict.hora }}_desde">Desde:</label>
+                    <input type="time"
+                           id="{{ val_dict.hora }}_desde"
+                           name="{{ val_dict.hora }}_desde"
+                           {% if val_dict.obj %}value="{{ val_dict.obj.hora_desde }}"{% endif %} />
                 </span>
                 <br>
                 <br>
             {% endfor %}
-            <a href="{% url "Clases" %}" class="btn btn-outline-secondary">Volver</a>
-            <input type="submit" value="Cargar" class="btn btn-primary">
+            <a href="{% url "Clases" %}"
+               class="btn btn-outline-secondary"
+               style="margin-bottom: 30px">Volver</a>
+            <input type="submit"
+                   value="Cargar"
+                   class="btn btn-primary"
+                   style="margin-bottom: 30px">
         </div>
     </form>
 {% endblock content %}

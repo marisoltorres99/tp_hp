@@ -30,11 +30,13 @@ class Clase(models.Model):
     def mostrar_activo(self):
         return "Activada" if self.activo else "Desactivada"
 
-    def cupo_disponible(self):
-        from inscripciones.models import Inscripcion
-
-        inscripciones_clase_qs = Inscripcion.objects.filter(clase=self)
-        return inscripciones_clase_qs.count() < self.cupo
+    def validar_desactivacion(self):
+        inscripciones_qs = self.inscripciones.all()
+        if inscripciones_qs.exists():
+            # hay inscripciones, por lo tanto, no se puede desactivar
+            return False
+        # no hay inscripciones, por lo tanto, puede desactivarse
+        return True
 
 
 class HorariosClases(models.Model):

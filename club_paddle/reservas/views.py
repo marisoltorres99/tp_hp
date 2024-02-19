@@ -1,5 +1,7 @@
+import pytz
 from canchas.models import Cancha
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -27,6 +29,12 @@ def nueva_reserva(request):
 
         fecha_hora_dt = datetime.strptime(f"{fecha_str} {hora_str}", "%Y-%m-%d %H:%M")
 
+        # obtengo la zona horaria deseada
+        timezone_buenos_aires = pytz.timezone("America/Buenos_Aires")
+
+        # asignar la zona horaria a la fecha y hora de reserva
+        fecha_hora_dt = timezone_buenos_aires.localize(fecha_hora_dt)
+
         # Crear nueva reserva
         nueva_reserva = Reserva(
             cliente=cliente,
@@ -35,7 +43,11 @@ def nueva_reserva(request):
             precio=cancha.obtener_precio_actual(),
         )
         nueva_reserva.save()
-        messages.success(request, "¡Su reserva ha sido exitosa!")
+        messages.success(
+            request,
+            "¡Su reserva ha sido exitosa! Enviamos un mail de recordatorio de reserva a su cuenta de correo.",
+        )
+        enviar_correo_reserva(request.user, cancha, fecha_hora_dt)
         return HttpResponseRedirect(reverse("buscar_canchas"))
 
 
@@ -57,3 +69,11 @@ def cancelar_reserva(request):
         reserva.save()
         messages.success(request, "¡Reserva cancelada con éxito!")
         return HttpResponseRedirect(reverse("mis_reservas"))
+
+
+def enviar_correo_reserva(usuario, cancha, fecha):
+    asunto = "Recordatorio de reserva de cancha"
+    mensaje = f"Hola {usuario.first_name},\n\nHas reservado la cancha {cancha} para el día {fecha}. ¡Esperamos que disfrutes tu tiempo en el Club!"
+    correo_destino = [usuario.email]  # Asume que el usuario tiene un campo de email
+
+    send_mail(asunto, mensaje, "paddleclub8@gmail.com", correo_destino)

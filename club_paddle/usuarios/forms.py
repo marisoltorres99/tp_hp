@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import (
     AuthenticationForm,
+    PasswordChangeForm,
     UserChangeForm,
     UserCreationForm,
     UsernameField,
@@ -15,7 +16,7 @@ class FormNuevoCliente(UserCreationForm):
     oninvalid_js_action = f"this.setCustomValidity('{mensaje}')"
     oninput_js_action = "this.setCustomValidity('')"
 
-    dni = forms.CharField(label="DNI", max_length=8)
+    dni = forms.CharField(label="DNI", max_length=8, min_length=8)
     dni.widget.attrs.update({"class": "form-control"})
     dni.widget.attrs.update({"placeholder": "ingrese DNI"})
     dni.widget.attrs.update({"oninvalid": oninvalid_js_action})
@@ -106,7 +107,7 @@ class FormInicioSesion(AuthenticationForm):
 
 
 class FormModificarCliente(UserChangeForm):
-    dni = forms.CharField(label="DNI", max_length=8)
+    dni = forms.CharField(label="DNI", max_length=8, min_length=8)
     dni.widget.attrs.update({"class": "form-control"})
     dni.widget.attrs.update({"placeholder": "ingrese DNI"})
 
@@ -153,3 +154,11 @@ class FormModificarCliente(UserChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields.pop("password", None)
+
+
+class FormCambiarPassword(PasswordChangeForm):
+    def __init__(self, user, *args, **kwargs):
+        super(FormCambiarPassword, self).__init__(user, *args, **kwargs)
+        self.fields["old_password"].widget.attrs.update({"class": "form-control"})
+        self.fields["new_password1"].widget.attrs.update({"class": "form-control"})
+        self.fields["new_password2"].widget.attrs.update({"class": "form-control"})

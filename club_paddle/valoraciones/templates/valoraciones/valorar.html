@@ -9,24 +9,30 @@
 {% endblock styles %}
 {% block content %}
     <div class="container pt-2">
-        {% if messages %}
-            <ul class="container mb-3 mt-3 alert alert-success">
-                {% for message in messages %}
-                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        {% include "mensajes.html" %}
         <h2>Valoracion de Cancha</h2>
-        <form action="{% url "nueva_valoracion" cancha_id=cancha.pk %}"
-              method="post">
-            {% csrf_token %}
-            <p>Cancha: {{ cancha.numero }}</p>
-            <p>Valoracion: {{ cancha.valoracion }}</p>
-            <p>Precio: {{ cancha.obtener_precio_actual }}</p>
-            <label for="valorar">¡Danos tu opinión! (1 a 5)</label>
-            <input type="text" id="valorar" name="valoracion">
-            <input type="submit" class="btn btn-primary" value="Valorar">
-        </form>
-        <a href="{% url "mis_reservas" %}" class="btn btn-outline-secondary">Volver</a>
+        <div class="row">
+            <div class="col-md-6">
+                <img src="{{ cancha.imagen.url }}"
+                     class="img-fluid"
+                     alt="Imagen de la Cancha">
+            </div>
+            <div class="col-md-6">
+                <form action="{% url "nueva_valoracion" cancha_id=cancha.pk %}"
+                      method="post">
+                    {% csrf_token %}
+                    <p>Cancha: {{ cancha.numero }}</p>
+                    <p>Valoracion: {{ cancha.valoracion }}</p>
+                    <p>Precio: {{ cancha.obtener_precio_actual }}</p>
+                    <div class="form-group">
+                        <label for="valorar">{{ mensaje }}</label>
+                        <input type="text" id="valorar" name="valoracion" class="form-control">
+                    </div>
+                    <br>
+                    <input type="submit" class="btn btn-primary" value="Valorar">
+                    <a href="{% url "mis_reservas" %}" class="btn btn-outline-secondary">Volver</a>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock content %}

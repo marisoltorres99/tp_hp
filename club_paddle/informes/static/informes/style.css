@@ -15,9 +15,9 @@ td, thead{
 }
 
 .table .celdas_vacias{
-    background-color: lightgray;
+    background-color: #e9ecef;
 }
 
 .table .celda_total{
-    background-color: greenyellow;
+    background-color: #d1e7dd;
 }

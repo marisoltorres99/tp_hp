@@ -9,13 +9,7 @@
 {% endblock styles %}
 {% block content %}
     <h2 class="container pt-2">{{ abm }}</h2>
-    {% if messages %}
-        <ul class="container mb-3 mt-3 alert alert-success">
-            {% for message in messages %}
-                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    {% include "mensajes.html" %}
     <form action="" method="post">
         {% csrf_token %}
         <div class="container mb-3 mt-3">

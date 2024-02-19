@@ -27,7 +27,10 @@
                         <td>{{ horario.hora }}</td>
                         <td>{{ horario.cancha.numero }}</td>
                         <td>{{ horario.cancha.obtener_precio_actual }}</td>
-                        <td>{{ horario.cancha.valoracion|default:"No valorada" }}</td>
+                        <td>
+                            {{ horario.cancha.valoracion|default:"No valorada" }}
+                            {% if horario.cancha.valoracion is not None %}<span>&#9733;</span>{% endif %}
+                        </td>
                         <td>
                             <button type="button"
                                     data-bs-toggle="modal"
@@ -40,7 +43,9 @@
                     </tr>
                 </table>
             {% endfor %}
-            <a href="{% url "buscar_canchas" %}" class="btn btn-outline-secondary">Volver</a>
+            <a href="{% url "buscar_canchas" %}"
+               class="btn btn-outline-secondary espacio"
+               style="margin-bottom: 30px">Volver</a>
             <!-- The Modal -->
             <div class="modal fade" id="ModalReservar">
                 <div class="modal-dialog">

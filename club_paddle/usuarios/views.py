@@ -3,7 +3,6 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -11,7 +10,12 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import View
 
-from usuarios.forms import FormInicioSesion, FormModificarCliente, FormNuevoCliente
+from usuarios.forms import (
+    FormCambiarPassword,
+    FormInicioSesion,
+    FormModificarCliente,
+    FormNuevoCliente,
+)
 from usuarios.models import Cliente
 
 
@@ -192,7 +196,7 @@ def modificar_cuenta(request):
 @login_required
 def change_password(request):
     if request.method == "POST":
-        form = PasswordChangeForm(request.user, request.POST)
+        form = FormCambiarPassword(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             # actualiza la sesión del usuario para que no se cierre la sesión después de cambiar la contraseña.
@@ -200,7 +204,7 @@ def change_password(request):
             messages.success(request, "¡Contraseña modificada con éxito!")
             return redirect("modificar_cuenta")
         else:
-            messages.error(request, "Please correct the error below.")
+            messages.error(request, "Por favor, ingrese una contraseña correcta.")
     else:
-        form = PasswordChangeForm(request.user)
+        form = FormCambiarPassword(request.user)
     return render(request, "usuarios/change_password.html", {"form": form})

@@ -25,3 +25,7 @@ class Inscripcion(models.Model):
 
     def __str__(self):
         return self.inscripcion_id.__str__()
+
+    @classmethod
+    def cupo_disponible(cls, clase):
+        return cls.objects.filter(clase=clase).count() < clase.cupo

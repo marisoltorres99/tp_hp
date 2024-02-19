@@ -4,19 +4,13 @@
 {% endblock title %}
 {% block content %}
     <h2 class="container pt-2">{{ descripcion }}</h2>
-    {% if modificar %}
-        <div class="container pt-2">
-            Para cambiar su contraseña haga
-            <a href="{% url "modificar_password" %}">click aqui</a>
-        </div>
-    {% endif %}
-    {% if messages %}
-        <ul class="container mb-3 mt-3 alert alert-warning">
-            {% for message in messages %}
-                <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="container pt-2">
+        {% if modificar %}
+            <span class="alert alert-info">Para cambiar su contraseña haga
+                <a href="{% url "modificar_password" %}">click aqui</a></span>
+        {% endif %}
+    </div>
+    <div class="container pt-2">{% include "mensajes.html" %}</div>
     <form action="" method="post">
         {% csrf_token %}
         <div class="container mb-3 mt-3">

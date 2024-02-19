@@ -30,6 +30,25 @@ class Cancha(models.Model):
     def obtener_precio_actual(self):
         return self.precios.latest("fecha_hora_desde").precio
 
+    def validar_desactivacion(self):
+        # verificar si hay clases asociadas a la cancha
+        clases_qs = self.clases.all()
+        if clases_qs.exists():
+            # si hay clases asociadas a la cancha
+            for clase in clases_qs:
+                if clase.inscripciones.exists():
+                    # si hay inscripciones en alguna de las clases de la cancha
+                    return False
+
+        # verificar si hay reservas asociadas a la cancha
+        reservas_qs = self.reservas.all()
+        if reservas_qs.exists():
+            # si hay reservas asociadas a la cancha
+            return False
+
+        # si no hay clases ni reservas asociadas a la cancha
+        return True
+
     def validar_reserva_existente(self, horario_ingresado):
         dias_semana = {
             0: "Lunes",

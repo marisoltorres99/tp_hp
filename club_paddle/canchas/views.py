@@ -21,13 +21,21 @@ def abm_canchas(request):
         # cambio de estado de cancha
         if "desactivar" in request.POST:
             cancha_id = request.POST.get("desactivar")
-            cancha_qs = Cancha.objects.filter(cancha_id=cancha_id)
-            cancha_qs.update(activo=False)
-            messages.success(request, "¡Cancha desactivada con éxito!")
+            cancha = Cancha.objects.get(cancha_id=cancha_id)
+            if cancha.validar_desactivacion():
+                cancha.activo = False
+                cancha.save()
+                messages.success(request, "¡Cancha desactivada con éxito!")
+            else:
+                messages.error(
+                    request,
+                    "Error al desactivar cancha. Existen inscripciones o reservas en la cancha.",
+                )
         else:
             cancha_id = request.POST.get("activar")
-            cancha_qs = Cancha.objects.filter(cancha_id=cancha_id)
-            cancha_qs.update(activo=True)
+            cancha = Cancha.objects.get(cancha_id=cancha_id)
+            cancha.activo = True
+            cancha.save()
             messages.success(request, "¡Cancha activada con éxito!")
         return HttpResponseRedirect(reverse("Canchas"))
 

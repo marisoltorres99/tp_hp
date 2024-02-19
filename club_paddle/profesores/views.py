@@ -14,13 +14,21 @@ def abm_profesores(request):
     else:
         if "desactivar" in request.POST:
             profesor_id = request.POST.get("desactivar")
-            profesor_qs = Profesor.objects.filter(profesor_id=profesor_id)
-            profesor_qs.update(activo=False)
-            messages.success(request, "¡Profesor desactivado con éxito!")
+            profesor = Profesor.objects.get(profesor_id=profesor_id)
+            if profesor.validar_desactivacion():
+                profesor.activo = False
+                profesor.save()
+                messages.success(request, "¡Profesor desactivado con éxito!")
+            else:
+                messages.error(
+                    request,
+                    "Error al desactivar profesor. Existen inscripciones a la clases del profesor.",
+                )
         else:
             profesor_id = request.POST.get("activar")
-            profesor_qs = Profesor.objects.filter(profesor_id=profesor_id)
-            profesor_qs.update(activo=True)
+            profesor = Profesor.objects.get(profesor_id=profesor_id)
+            profesor.activo = True
+            profesor.save()
             messages.success(request, "¡Profesor activado con éxito!")
         return HttpResponseRedirect(reverse("Profesores"))
 

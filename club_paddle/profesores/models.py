@@ -10,6 +10,17 @@ class Profesor(models.Model):
     domicilio = models.CharField(null=False, blank=False, max_length=20)
     activo = models.BooleanField(default=True)
 
+    def validar_desactivacion(self):
+        clases_qs = self.clases.all()
+        if clases_qs.exists():
+            # si hay clases asociadas al profesor
+            for clase in clases_qs:
+                if clase.inscripciones.exists():
+                    # si hay inscripciones en alguna de las clases del profesor
+                    return False
+        # no hay inscripciones en ninguna de las clases del profesor
+        return True
+
     class Meta:
         verbose_name = "profesor"
         verbose_name_plural = "profesores"

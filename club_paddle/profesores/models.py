@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Profesor(models.Model):
@@ -19,6 +20,42 @@ class Profesor(models.Model):
                     # si hay inscripciones en alguna de las clases del profesor
                     return False
         # no hay inscripciones en ninguna de las clases del profesor
+        return True
+
+    def validar_existencia_clase_horario(self, horario_ingresado):
+        dia = horario_ingresado.dia
+        hora_desde_str = horario_ingresado.hora_desde
+        hora_hasta_str = horario_ingresado.hora_hasta
+
+        # convertir las cadenas de tiempo a objetos time
+        hora_desde = timezone.datetime.strptime(hora_desde_str, "%H:%M").time()
+        hora_hasta = timezone.datetime.strptime(hora_hasta_str, "%H:%M").time()
+
+        # buscar todas las clases del profesor para el día dado
+        clases_profesor = self.clases.filter(horarios__dia=dia)
+
+        for clase in clases_profesor:
+            # obtener los horarios asociados a la clase
+            horarios_clase = clase.horarios.all()
+
+            for horario in horarios_clase:
+                # verificar si hay solapamiento de horarios
+                if (
+                    (
+                        hora_desde >= horario.hora_desde
+                        and hora_desde < horario.hora_hasta
+                    )
+                    or (
+                        hora_hasta > horario.hora_desde
+                        and hora_hasta <= horario.hora_hasta
+                    )
+                    or (
+                        hora_desde <= horario.hora_desde
+                        and hora_hasta >= horario.hora_hasta
+                    )
+                ):
+                    return False
+
         return True
 
     class Meta:

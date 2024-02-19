@@ -63,7 +63,7 @@ def nueva_clase(request):
         if mi_formulario.is_valid():
             cupo = mi_formulario.cleaned_data["cupo"]
             descripcion = mi_formulario.cleaned_data["descripcion"]
-            profesor = mi_formulario.cleaned_data["profesor"]
+            profesor = mi_formulario.cleaned_data["profesor"]  # type: Profesor
             cancha = mi_formulario.cleaned_data["cancha"]  # type: Cancha
             # creo nueva clase
             clase = Clase(
@@ -111,19 +111,35 @@ def nueva_clase(request):
                     if cancha.validar_horario_limite(clase_horario):
                         if cancha.validar_superposicion_clase(clase_horario):
                             if cancha.validar_superposicion_reserva(clase_horario):
-                                # guardo clase y horarios
-                                if not clase.pk:
-                                    clase.save()
-                                clase_horario.save()
+                                if profesor.validar_existencia_clase_horario(
+                                    clase_horario
+                                ):
+                                    # guardo clase y horarios
+                                    if not clase.pk:
+                                        clase.save()
+                                    clase_horario.save()
+                                else:
+                                    mi_formulario = FormNuevaClase(request.POST)
+                                    context = {
+                                        "form": mi_formulario,
+                                        "dias": dias,
+                                    }
+                                    messages.error(
+                                        request,
+                                        "Error al cargar clase. El profesor ya dicta una clase en ese dia en ese horario.",
+                                    )
+                                    return render(
+                                        request, "clases/nueva_clase.html", context
+                                    )
                             else:
                                 mi_formulario = FormNuevaClase(request.POST)
                                 context = {
                                     "form": mi_formulario,
                                     "dias": dias,
                                 }
-                                messages.warning(
+                                messages.error(
                                     request,
-                                    "El horario ingresado se superpone con una reserva existente",
+                                    "Error al cargar clase. El horario ingresado se superpone con una reserva existente",
                                 )
                                 return render(
                                     request, "clases/nueva_clase.html", context
@@ -134,9 +150,9 @@ def nueva_clase(request):
                                 "form": mi_formulario,
                                 "dias": dias,
                             }
-                            messages.warning(
+                            messages.error(
                                 request,
-                                "El horario ingresado se superpone con una clase existente",
+                                "Error al cargar clase. El horario ingresado se superpone con una clase existente",
                             )
                             return render(request, "clases/nueva_clase.html", context)
                     else:
@@ -195,7 +211,7 @@ def editar_clase(request, **kwargs):
         if mi_formulario.is_valid():
             cupo = mi_formulario.cleaned_data["cupo"]
             descripcion = mi_formulario.cleaned_data["descripcion"]
-            profesor = mi_formulario.cleaned_data["profesor"]
+            profesor = mi_formulario.cleaned_data["profesor"]  # type: Profesor
             cancha = mi_formulario.cleaned_data["cancha"]  # type: Cancha
 
             # obtengo datos del form para actualizar los horarios
@@ -240,7 +256,19 @@ def editar_clase(request, **kwargs):
                     if cancha.validar_horario_limite(clase_horario):
                         if cancha.validar_superposicion_clase(clase_horario):
                             if cancha.validar_superposicion_reserva(clase_horario):
-                                lista_horarios_validos.append(clase_horario)
+                                if profesor.validar_existencia_clase_horario(
+                                    clase_horario
+                                ):
+                                    lista_horarios_validos.append(clase_horario)
+                                else:
+                                    mi_formulario = FormNuevaClase(request.POST)
+                                    messages.error(
+                                        request,
+                                        "Error al editar clase. El profesor ya dicta una clase en ese dia en ese horario.",
+                                    )
+                                    return render(
+                                        request, "clases/editar_clase.html", context
+                                    )
                             else:
                                 mi_formulario = FormNuevaClase(request.POST)
                                 messages.error(

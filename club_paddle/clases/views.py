@@ -42,13 +42,13 @@ def abm_clases(request):
 
 
 def nueva_clase(request):
-    dias = [
-        {"dia": "Lunes", "hora": "horaLunes"},
-        {"dia": "Martes", "hora": "horaMartes"},
-        {"dia": "Miercoles", "hora": "horaMiercoles"},
-        {"dia": "Jueves", "hora": "horaJueves"},
-        {"dia": "Viernes", "hora": "horaViernes"},
-    ]
+    dias = OrderedDict()
+    dias["Lunes"] = {"obj": None, "hora": "horaLunes"}
+    dias["Martes"] = {"obj": None, "hora": "horaMartes"}
+    dias["Miercoles"] = {"obj": None, "hora": "horaMiercoles"}
+    dias["Jueves"] = {"obj": None, "hora": "horaJueves"}
+    dias["Viernes"] = {"obj": None, "hora": "horaViernes"}
+
     if request.method == "GET":
         mi_formulario = FormNuevaClase()
         context = {
@@ -82,6 +82,14 @@ def nueva_clase(request):
             ]:
                 if key in datos_formulario:
                     del datos_formulario[key]
+
+            # recupero horarios ingresados
+            for dia, valor in datos_formulario.items():
+                if valor == "on":
+                    clase_horario = HorariosClases(clase=clase, dia=dia)
+                    desde_key = f"hora{dia}_desde"
+                    clase_horario.hora_desde = datos_formulario.get(desde_key)
+                    dias[dia]["obj"] = clase_horario
 
             # solo se utiliza para poder sumarle 1hr a las hora_desde
             intervalo_1hr = timedelta(hours=1)

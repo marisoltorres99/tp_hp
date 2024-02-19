@@ -33,15 +33,15 @@ def abm_canchas(request):
 
 
 def nueva_cancha(request):
-    dias = [
-        {"dia": "Lunes", "hora": "horaLunes"},
-        {"dia": "Martes", "hora": "horaMartes"},
-        {"dia": "Miercoles", "hora": "horaMiercoles"},
-        {"dia": "Jueves", "hora": "horaJueves"},
-        {"dia": "Viernes", "hora": "horaViernes"},
-        {"dia": "Sabado", "hora": "horaSabado"},
-        {"dia": "Domingo", "hora": "horaDomingo"},
-    ]
+    dias = OrderedDict()
+    dias["Lunes"] = {"obj": None, "hora": "horaLunes"}
+    dias["Martes"] = {"obj": None, "hora": "horaMartes"}
+    dias["Miercoles"] = {"obj": None, "hora": "horaMiercoles"}
+    dias["Jueves"] = {"obj": None, "hora": "horaJueves"}
+    dias["Viernes"] = {"obj": None, "hora": "horaViernes"}
+    dias["Sabado"] = {"obj": None, "hora": "horaSabado"}
+    dias["Domingo"] = {"obj": None, "hora": "horaDomingo"}
+
     if request.method == "GET":
         mi_formulario = FormNuevaCancha()
         context = {
@@ -54,24 +54,6 @@ def nueva_cancha(request):
         # recupero datos del form
         mi_formulario = FormNuevaCancha(request.POST)
         numero = request.POST.get("numero")
-
-        # verificar si ya existe una cancha con ese mismo numero
-        if Cancha.objects.filter(numero=numero).exists():
-            messages.warning(request, "Ya existe una cancha con ese numero")
-            dias = [
-                {"dia": "Lunes", "hora": "horaLunes"},
-                {"dia": "Martes", "hora": "horaMartes"},
-                {"dia": "Miercoles", "hora": "horaMiercoles"},
-                {"dia": "Jueves", "hora": "horaJueves"},
-                {"dia": "Viernes", "hora": "horaViernes"},
-                {"dia": "Sabado", "hora": "horaSabado"},
-                {"dia": "Domingo", "hora": "horaDomingo"},
-            ]
-            context = {
-                "form": mi_formulario,
-                "dias": dias,
-            }
-            return render(request, "canchas/nueva_cancha.html", context)
 
         if mi_formulario.is_valid():
             numero = mi_formulario.cleaned_data["numero"]
@@ -86,6 +68,25 @@ def nueva_cancha(request):
             for key in ["csrfmiddlewaretoken", "numero", "precio"]:
                 if key in datos_formulario:
                     del datos_formulario[key]
+
+            # recupero horarios ingresados
+            for dia, valor in datos_formulario.items():
+                if valor == "on":
+                    cancha_horario = HorariosCancha(cancha=cancha, dia=dia)
+                    desde_key = f"hora{dia}_desde"
+                    cancha_horario.hora_desde = datos_formulario.get(desde_key)
+                    hasta_key = f"hora{dia}_hasta"
+                    cancha_horario.hora_hasta = datos_formulario.get(hasta_key)
+                    dias[dia]["obj"] = cancha_horario
+
+            # verificar si ya existe una cancha con ese mismo numero
+            if Cancha.objects.filter(numero=numero).exists():
+                messages.warning(request, "Ya existe una cancha con ese numero")
+                context = {
+                    "form": mi_formulario,
+                    "dias": dias,
+                }
+                return render(request, "canchas/nueva_cancha.html", context)
 
             # cargo los horarios para la nueva cancha
             for dia, valor in datos_formulario.items():
@@ -166,6 +167,16 @@ def editar_cancha(request, **kwargs):
             for key in ["csrfmiddlewaretoken", "numero", "precio"]:
                 if key in datos_formulario:
                     del datos_formulario[key]
+
+            # recupero horarios ingresados
+            for dia, valor in datos_formulario.items():
+                if valor == "on":
+                    cancha_horario = HorariosCancha(cancha=cancha, dia=dia)
+                    desde_key = f"hora{dia}_desde"
+                    cancha_horario.hora_desde = datos_formulario.get(desde_key)
+                    hasta_key = f"hora{dia}_hasta"
+                    cancha_horario.hora_hasta = datos_formulario.get(hasta_key)
+                    dias[dia]["obj"] = cancha_horario
 
             lista_horarios_validos = []
 

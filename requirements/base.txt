@@ -1,3 +1,4 @@
 Django==4.2.2
 mysqlclient==2.2.0
 pytz
+pillow==10.2.0

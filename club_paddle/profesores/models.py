@@ -32,7 +32,9 @@ class Profesor(models.Model):
         hora_hasta = timezone.datetime.strptime(hora_hasta_str, "%H:%M").time()
 
         # buscar todas las clases del profesor para el día dado
-        clases_profesor = self.clases.filter(horarios__dia=dia)
+        clases_profesor = self.clases.exclude(
+            clase_id=horario_ingresado.clase.clase_id
+        ).filter(horarios__dia=dia)
 
         for clase in clases_profesor:
             # obtener los horarios asociados a la clase

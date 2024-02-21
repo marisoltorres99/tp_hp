@@ -162,7 +162,14 @@ def modificar_cuenta(request):
         # verificar si ya existe un usuario con el mismo DNI
         if User.objects.exclude(pk=request.user.pk).filter(cliente__dni=dni).exists():
             messages.error(request, "Ya existe un usuario con el mismo DNI.")
-            context["form"] = mi_formulario
+            context = {
+                "form": mi_formulario,
+                "errorDNI": True,
+                "boton_submit": "Modificar",
+                "titulo": "Modificar Cuenta",
+                "descripcion": "Modifique su cuenta",
+                "modificar": True,
+            }
             return render(request, "usuarios/registro.html", context)
         if mi_formulario.is_valid():
             try:

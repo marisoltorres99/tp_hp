@@ -4,13 +4,17 @@
 {% endblock title %}
 {% block content %}
     <h2 class="container pt-2">{{ descripcion }}</h2>
-    <div class="container pt-2">
+    <div class="container pt-2" style="margin-bottom: 30px">
         {% if modificar %}
             <span class="alert alert-info">Para cambiar su contraseña haga
                 <a href="{% url "modificar_password" %}">click aqui</a></span>
         {% endif %}
     </div>
-    <div class="container pt-2">{% include "mensajes.html" %}</div>
+    <div class="container pt-2" style="margin-top: 30px">
+    {% if errorDNI %}
+        {% include "mensajes.html" %}
+    {% endif %}
+    </div>
     <form action="" method="post">
         {% csrf_token %}
         <div class="container mb-3 mt-3">

@@ -66,8 +66,9 @@ def nueva_cancha(request):
         if mi_formulario.is_valid():
             numero = mi_formulario.cleaned_data["numero"]
             precio = mi_formulario.cleaned_data["precio"]
+            imagen = mi_formulario.cleaned_data["imagen"]
             # creo nueva cancha y nuevo precio para la cancha
-            cancha = Cancha(numero=numero)
+            cancha = Cancha(numero=numero, imagen=imagen)
             cancha_precio = CanchaPrecios(cancha=cancha, precio=precio)
 
             # recupero datos del form y elimino lo que no sea parte de los horarios

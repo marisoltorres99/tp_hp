@@ -53,3 +53,12 @@ class Reserva(models.Model):
 
     def se_puede_valorar(self):
         return self.fecha_hora_reserva <= timezone.now() and self.estado == "F"
+
+    def obtener_estado(self):
+        return dict(Reserva.Estados.choices)[self.estado]
+
+    def obtener_pagada(self):
+        if self.pagada:
+            return "Si"
+        else:
+            return "No"

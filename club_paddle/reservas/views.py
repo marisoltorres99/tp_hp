@@ -54,7 +54,9 @@ def nueva_reserva(request):
 def mostrar_reservas(request):
     if request.method == "GET":
         cliente = Cliente.objects.get(user_id=request.user.id)
-        mis_reservas_qs = Reserva.objects.filter(cliente=cliente)
+        mis_reservas_qs = Reserva.objects.filter(cliente=cliente).order_by(
+            "fecha_hora_reserva"
+        )
         context = {"mis_reservas_qs": mis_reservas_qs}
         return render(request, "reservas/mostrar_reservas.html", context)
 

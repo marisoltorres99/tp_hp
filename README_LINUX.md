@@ -6,11 +6,11 @@ Repositorio Git para el proyecto Django.
 
 Para instalarlo y luego crearlo ejecutamos:
 
-`apt install python3-virtualenv`
-
 `cd <carpeta_del_repositorio_git>`
 
-`virtualenv -p /usr/bin/python3.10 --prompt "(virtualenv-PWC)" virtualenv`
+`apt install python3-virtualenv`
+
+`virtualenv -p /usr/bin/python3.10 --prompt "(virtualenv-TP_HP)" virtualenv`
 
 Activar el virtualenv recién creado y luego actualizar pip:
 
@@ -36,22 +36,11 @@ Luego actualizamos pip mas otras deps relacionadas:
 
 `pip install -r requirements/base.txt -r requirements/dev.txt`
 
-# Crear el proyecto Django
+# Crear el proyecto Django (solo la primera vez)
 
 `django-admin startproject <carpeta_del_proyecto_django>`
 
-# Crear DB en MySQL, crear usuario para DB y asignar permisos
-
-```
-CREATE DATABASE nombre_db
-    DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_spanish_ci;
-
-CREATE USER 'usuario_db'@'localhost' IDENTIFIED BY 'completar password';
-
-GRANT ALL PRIVILEGES ON nombre_db.* TO 'usuario_db'@'localhost';
-```
-
-# Modificar estructura de settings para convertirlo en un package
+# Modificar estructura de settings para convertirlo en un package (solo la primera vez)
 
 `cd <carpeta_del_proyecto_django>`
 
@@ -59,38 +48,37 @@ GRANT ALL PRIVILEGES ON nombre_db.* TO 'usuario_db'@'localhost';
 
 `mv -v <carpeta_del_proyecto_django>/settings.py <carpeta_del_proyecto_django>/settings/django_base.py`
 
-# Crear nuestro archivo de configs personalizadas
-
-`touch <carpeta_del_proyecto_django>/settings/__init__.py`
-
-Agregar el siguiente contenido al archivo **<carpeta_del_proyecto_django>/settings/\_\_init\_\_.py**:
+# Crear DB en MySQL, crear usuario para DB y asignar permisos (solo si no existe)
 
 ```
-from .django_base import *
+CREATE DATABASE club_paddle DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_spanish_ci;
 
-# datos acceso DB
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "STORAGE_ENGINE": "INNODB",
-        "HOST": "localhost",
-        "PORT": "3306",
-        "NAME": "nombre_db",
-        "USER": "usuario_db",
-        "PASSWORD": "completar password",
-    }
-}
+CREATE USER 'club_paddle_user'@'localhost' IDENTIFIED BY 'completar password';
 
-# idioma
-LANGUAGE_CODE = "es-es"
-
-# zona horaria
-TIME_ZONE = "America/Argentina/Buenos_Aires"
+GRANT ALL PRIVILEGES ON club_paddle.* TO 'club_paddle_user'@'localhost';
 ```
+
+# Cargar time zone info en la DB
+
+Para MariaDB ejecutar:
+
+`mariadb-tzinfo-to-sql /usr/share/zoneinfo | sudo mariadb -u root mysql`
+
+Para MySQL ejecutar:
+
+`mysql_tzinfo_to_sql /usr/share/zoneinfo | sudo mysql -u root mysql`
+
+# Crear nuestro archivo de configs personalizadas copiando el archivo de ejemplo y luego editarlo
+
+Crear una copia del archivo `tp_hp/club_paddle/club_paddle/settings/example_init.py`
+Y renombrar la copia como `__init__.py`
+Luego editar el contenido de la copia para ajustar nuestros passwords.
 
 # Correr migrations
 
 Ahora se creará todo en la DB MySQL
+
+`cd tp_hp/club_paddle/`
 
 `python manage.py migrate`
 
@@ -109,9 +97,12 @@ y allí crear mas usuarios, editar, etc...
 
     http://127.0.0.1:8000/admin/
 
-# borrador
-mariadb-tzinfo-to-sql /usr/share/zoneinfo | mariadb -u root mysql
+# Configurar croneo de script para actualizar estados de reservas
 
-mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql
+`crontab -e`
 
-ver cron
+Y luego agregar la config:
+
+```
+0 * * * * /ruta_repositorio_git/cron_scripts/actualizar_estados_reservas.sh
+```

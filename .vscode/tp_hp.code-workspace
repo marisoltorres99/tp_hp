@@ -40,17 +40,15 @@
         },
         "python.defaultInterpreterPath": "${workspaceFolder}/virtualenv/bin/python",
         "python.analysis.extraPaths": [
-            "${workspaceFolder}/tienda_web_curso/"
+            "${workspaceFolder}/club_paddle/"
         ],
         "python.autoComplete.extraPaths": [
-            "${workspaceFolder}/tienda_web_curso/"
+            "${workspaceFolder}/club_paddle/"
         ],
         "ruff.organizeImports": true,
         "djangointellisense.debugMessages": true,
-        "djangointellisense.projectRoot": "${workspaceFolder}/tienda_web_curso/tienda_web_curso/",
-        "djangointellisense.settingsModule": "tienda_web_curso.settings",
-        // djlint.useNewLinterOutputParser: setear en false para versiones de djlint < 1.25
-        "djlint.useNewLinterOutputParser": false,
+        "djangointellisense.projectRoot": "${workspaceFolder}/club_paddle/club_paddle/",
+        "djangointellisense.settingsModule": "club_paddle.settings",
         "emmet.includeLanguages": {
             "django-html": "html",
         },

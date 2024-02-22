@@ -1,7 +1,10 @@
 from datetime import time
 
+import pytz
 from django.db import models
 from django.utils import timezone
+
+from club_paddle.settings import TIME_ZONE
 
 
 class Cancha(models.Model):
@@ -59,14 +62,14 @@ class Cancha(models.Model):
             5: "Sábado",
             6: "Domingo",
         }
+
         reservas_qs = self.reservas.filter(estado="P")
         for reserva in reservas_qs:
             dia_semana_numero = reserva.fecha_hora_reserva.weekday()
             nombre_dia_semana = dias_semana[dia_semana_numero]
             if horario_ingresado.dia == nombre_dia_semana:
-                hora_reserva = timezone.datetime.combine(
-                    reserva.fecha_hora_reserva.date(), reserva.fecha_hora_reserva.time()
-                )
+                hora_reserva_dt = reserva.fecha_hora_reserva
+
                 # convertir horas y minutos de cadena a objetos datetime
                 hora_desde = timezone.datetime.strptime(
                     horario_ingresado.hora_desde, "%H:%M"
@@ -74,15 +77,26 @@ class Cancha(models.Model):
                 hora_hasta = timezone.datetime.strptime(
                     horario_ingresado.hora_hasta, "%H:%M"
                 ).time()
+
+                # obtengo la zona horaria deseada
+                tz = pytz.timezone(TIME_ZONE)
+
                 hora_desde_dt = timezone.datetime.combine(
-                    reserva.fecha_hora_reserva.date(), hora_desde
+                    reserva.fecha_hora_reserva.date(),
+                    hora_desde,
                 )
+                # asignar la zona horaria a la fecha y hora de reserva
+                hora_desde_dt = tz.localize(hora_desde_dt)
+
                 hora_hasta_dt = timezone.datetime.combine(
                     reserva.fecha_hora_reserva.date(), hora_hasta
                 )
+                # asignar la zona horaria a la fecha y hora de reserva
+                hora_hasta_dt = tz.localize(hora_hasta_dt)
+
                 if (
-                    hora_desde_dt > hora_reserva
-                    or hora_hasta_dt < hora_reserva + timezone.timedelta(hours=1)
+                    hora_desde_dt > hora_reserva_dt
+                    or hora_hasta_dt < hora_reserva_dt + timezone.timedelta(hours=1)
                 ):
                     return False
 

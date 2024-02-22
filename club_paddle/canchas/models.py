@@ -33,6 +33,25 @@ class Cancha(models.Model):
     def obtener_precio_actual(self):
         return self.precios.latest("fecha_hora_desde").precio
 
+    def validar_reserva_dia_borrado(self, horario_borrado):
+        dias_semana = {
+            0: "Lunes",
+            1: "Martes",
+            2: "Miércoles",
+            3: "Jueves",
+            4: "Viernes",
+            5: "Sábado",
+            6: "Domingo",
+        }
+
+        reservas_qs = self.reservas.filter(estado="P")
+        for reserva in reservas_qs:
+            dia_semana_numero = reserva.fecha_hora_reserva.weekday()
+            nombre_dia_semana = dias_semana[dia_semana_numero]
+            if horario_borrado.dia == nombre_dia_semana:
+                return False
+        return True
+
     def validar_desactivacion(self):
         # verificar si hay clases asociadas a la cancha
         clases_qs = self.clases.all()

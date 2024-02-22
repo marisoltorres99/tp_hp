@@ -33,6 +33,15 @@ class Cancha(models.Model):
     def obtener_precio_actual(self):
         return self.precios.latest("fecha_hora_desde").precio
 
+    def validar_clase_dia_borrado(self, horario_borrado):
+        clases_qs = self.clases.all()
+        for clase in clases_qs:
+            horarios_qs = clase.horarios.all()
+            for horario in horarios_qs:
+                if horario_borrado.dia == horario.dia:
+                    return False
+        return True
+
     def validar_reserva_dia_borrado(self, horario_borrado):
         dias_semana = {
             0: "Lunes",

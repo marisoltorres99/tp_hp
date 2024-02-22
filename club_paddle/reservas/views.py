@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.timezone import datetime
 from usuarios.models import Cliente
 
+from club_paddle.settings import EMAIL_HOST_USER, TIME_ZONE
 from reservas.models import Reserva
 
 
@@ -30,10 +31,10 @@ def nueva_reserva(request):
         fecha_hora_dt = datetime.strptime(f"{fecha_str} {hora_str}", "%Y-%m-%d %H:%M")
 
         # obtengo la zona horaria deseada
-        timezone_buenos_aires = pytz.timezone("America/Buenos_Aires")
+        tz = pytz.timezone(TIME_ZONE)
 
         # asignar la zona horaria a la fecha y hora de reserva
-        fecha_hora_dt = timezone_buenos_aires.localize(fecha_hora_dt)
+        fecha_hora_dt = tz.localize(fecha_hora_dt)
 
         # Crear nueva reserva
         nueva_reserva = Reserva(
@@ -78,4 +79,4 @@ def enviar_correo_reserva(usuario, cancha, fecha):
     mensaje = f"Hola {usuario.first_name},\n\nHas reservado la cancha {cancha} para el día {fecha}. ¡Esperamos que disfrutes tu tiempo en el Club!"
     correo_destino = [usuario.email]  # Asume que el usuario tiene un campo de email
 
-    send_mail(asunto, mensaje, "paddleclub8@gmail.com", correo_destino)
+    send_mail(asunto, mensaje, EMAIL_HOST_USER, correo_destino)

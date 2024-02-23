@@ -166,20 +166,22 @@ def editar_cancha(request, **kwargs):
 
             cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
 
-            if imagen is not None:
-                cancha.imagen = imagen
+            # if imagen is not None:
+            cancha.imagen = imagen
 
             # obtengo datos del form para actualizar los horarios
             datos_formulario = request.POST.dict()
 
             # elimino de los datos del form las claves que no sean parte de los horarios
-            for key in ["csrfmiddlewaretoken", "numero", "precio"]:
+            for key in ["csrfmiddlewaretoken", "numero", "precio", "imagen"]:
                 if key in datos_formulario:
                     del datos_formulario[key]
 
+            lista_dias_check = []
             # recupero horarios ingresados
             for dia, valor in datos_formulario.items():
                 if valor == "on":
+                    lista_dias_check.append(dia)
                     cancha_horario = HorariosCancha(cancha=cancha, dia=dia)
                     desde_key = f"hora{dia}_desde"
                     cancha_horario.hora_desde = datos_formulario.get(desde_key)
@@ -189,24 +191,39 @@ def editar_cancha(request, **kwargs):
 
             lista_horarios_validos = []
 
+            lista_dias_no_check = []
+            # recorro dias para saber los no check
+            for dia in dias.keys():
+                if dia not in lista_dias_check:
+                    lista_dias_no_check.append(dia)
+
+            for dia in lista_dias_no_check:
+                cancha_horario = HorariosCancha(cancha=cancha, dia=dia)
+                if cancha.existe_reserva_en_dia(cancha_horario):
+                    messages.error(
+                        request,
+                        "Error al modificar cancha. No se pueden borrar horarios que tienen reservas pendientes.",
+                    )
+                    context = {
+                        "form": mi_formulario,
+                        "dias": dias,
+                        "cancha": cancha.numero,
+                    }
+                    return render(request, "canchas/editar_cancha.html", context)
+                if cancha.existe_clase_en_dia(cancha_horario):
+                    messages.error(
+                        request,
+                        "Error al modificar cancha. No se pueden borrar horarios que tienen clases.",
+                    )
+                    context = {
+                        "form": mi_formulario,
+                        "dias": dias,
+                        "cancha": cancha.numero,
+                    }
+                    return render(request, "canchas/editar_cancha.html", context)
+
             # cargo los nuevos horarios
             for dia, valor in datos_formulario.items():
-                if valor == "":
-                    cancha_horario = HorariosCancha(cancha=cancha, dia=dia)
-                    if cancha.validar_reserva_dia_borrado(cancha_horario):
-                        if cancha.validar_clase_dia_borrado(cancha_horario):
-                            messages.error(
-                                request,
-                                "Error al modificar cancha. No se pueden borrar horarios que tienen reservas pendientes o clases.",
-                            )
-                            context = {
-                                "form": mi_formulario,
-                                "dias": dias,
-                                "cancha": cancha.numero,
-                            }
-                            return render(
-                                request, "canchas/editar_cancha.html", context
-                            )
                 if valor == "on":
                     cancha_horario = HorariosCancha(cancha=cancha, dia=dia)
                     desde_key = f"hora{dia}_desde"

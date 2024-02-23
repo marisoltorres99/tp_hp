@@ -7,6 +7,10 @@ from django.utils import timezone
 from club_paddle.settings import TIME_ZONE
 
 
+def get_img_upload_path(cancha, filename):
+    return "canchas/images/{}/{}".format(cancha.pk, filename)
+
+
 class Cancha(models.Model):
     cancha_id = models.BigAutoField(primary_key=True)
     valoracion = models.DecimalField(
@@ -17,7 +21,7 @@ class Cancha(models.Model):
     )
     activo = models.BooleanField(default=True)
     numero = models.IntegerField(null=False, blank=False, unique=True)
-    imagen = models.ImageField(upload_to="canchas/images", blank=True, null=True)
+    imagen = models.ImageField(upload_to=get_img_upload_path, blank=True, null=True)
 
     class Meta:
         verbose_name = "cancha"
@@ -27,22 +31,33 @@ class Cancha(models.Model):
     def __str__(self):
         return str(self.numero)
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            cancha_vieja = Cancha.objects.get(cancha_id=self.pk)
+
+        # checkeamos si se modifico la imagen
+        if self.imagen != cancha_vieja.imagen:
+            cancha_vieja.imagen.delete(False)
+
+        super().save(*args, **kwargs)
+
     def mostrar_activo(self):
         return "Activada" if self.activo else "Desactivada"
 
     def obtener_precio_actual(self):
         return self.precios.latest("fecha_hora_desde").precio
 
-    def validar_clase_dia_borrado(self, horario_borrado):
+    def existe_clase_en_dia(self, dia_borrado):
         clases_qs = self.clases.all()
+        if not clases_qs.exists():
+            return False
         for clase in clases_qs:
             horarios_qs = clase.horarios.all()
             for horario in horarios_qs:
-                if horario_borrado.dia == horario.dia:
-                    return False
-        return True
+                if dia_borrado.dia == horario.dia:
+                    return True
 
-    def validar_reserva_dia_borrado(self, horario_borrado):
+    def existe_reserva_en_dia(self, dia_borrado):
         dias_semana = {
             0: "Lunes",
             1: "Martes",
@@ -54,12 +69,13 @@ class Cancha(models.Model):
         }
 
         reservas_qs = self.reservas.filter(estado="P")
+        if not reservas_qs.exists():
+            return False
         for reserva in reservas_qs:
             dia_semana_numero = reserva.fecha_hora_reserva.weekday()
             nombre_dia_semana = dias_semana[dia_semana_numero]
-            if horario_borrado.dia == nombre_dia_semana:
-                return False
-        return True
+            if dia_borrado.dia == nombre_dia_semana:
+                return True
 
     def validar_desactivacion(self):
         # verificar si hay clases asociadas a la cancha

@@ -77,6 +77,6 @@ def cancelar_reserva(request):
 def enviar_correo_reserva(usuario, cancha, fecha):
     asunto = "Recordatorio de reserva de cancha"
     mensaje = f"Hola {usuario.first_name},\n\nHas reservado la cancha {cancha} para el día {fecha}. ¡Esperamos que disfrutes tu tiempo en el Club!"
-    correo_destino = [usuario.email]  # Asume que el usuario tiene un campo de email
+    correo_destino = [usuario.email]
 
     send_mail(asunto, mensaje, EMAIL_HOST_USER, correo_destino)

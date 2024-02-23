@@ -60,7 +60,7 @@ def nueva_cancha(request):
 
     else:
         # recupero datos del form
-        mi_formulario = FormNuevaCancha(request.POST)
+        mi_formulario = FormNuevaCancha(request.POST, request.FILES)
         numero = request.POST.get("numero")
 
         if mi_formulario.is_valid():
@@ -166,14 +166,22 @@ def editar_cancha(request, **kwargs):
 
             cancha = Cancha.objects.get(cancha_id=kwargs["cancha_id"])
 
-            # if imagen is not None:
-            cancha.imagen = imagen
+            if imagen:
+                cancha.imagen = imagen
+            elif imagen is False:
+                cancha.imagen = None
 
             # obtengo datos del form para actualizar los horarios
             datos_formulario = request.POST.dict()
 
             # elimino de los datos del form las claves que no sean parte de los horarios
-            for key in ["csrfmiddlewaretoken", "numero", "precio", "imagen"]:
+            for key in [
+                "csrfmiddlewaretoken",
+                "numero",
+                "precio",
+                "imagen",
+                "imagen-clear",
+            ]:
                 if key in datos_formulario:
                     del datos_formulario[key]
 

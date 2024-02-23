@@ -35,11 +35,11 @@ class Cancha(models.Model):
         if self.pk:
             cancha_vieja = Cancha.objects.get(cancha_id=self.pk)
 
-        # checkeamos si se modifico la imagen
-        if self.imagen != cancha_vieja.imagen:
-            cancha_vieja.imagen.delete(False)
+            # checkeamos si se modifico la imagen
+            if self.imagen != cancha_vieja.imagen:
+                cancha_vieja.imagen.delete(False)
 
-        super().save(*args, **kwargs)
+        super(Cancha, self).save(*args, **kwargs)
 
     def mostrar_activo(self):
         return "Activada" if self.activo else "Desactivada"
